@@ -1,5 +1,5 @@
 #ext=`date +%F` 
-ext='2024-02-14'
+ext='WH'
 
 STEP=0
 usage(){
@@ -55,7 +55,7 @@ if [[ $STEP == "yields" ]]; then
 	# for bookkeeping mistake, for VBF the files are called ALT_xxx for VBF and ALTxx for VH,TTH
 	altproc_nonvbf=`echo ${altproc} | sed 's|_||g'`
        
-         vbfsamples="VBF,VBF_${altproc},VBF_${altproc}f05"
+         vbfsamples="VBF_ALT_0PM,VBF_${altproc},VBF_${altproc}f05"
     
 
         if [[ $altproc == "ALT_0PH" ]]; then 
@@ -72,7 +72,7 @@ if [[ $STEP == "yields" ]]; then
         if [[ $altproc == "ALT_0PH" ]]; then 
 	     whsamples="WMINUSH2HQQ,WPLUSH2HQQ,WH_ALT0PH,WH_ALT0PHf05ph0"
         elif [[ $altproc == "ALT_0M" ]]; then 
-        whsamples="WMINUSH2HQQ,WPLUSH2HQQ,wh_ALT_0M"
+        whsamples="WMINUSH2HQQ,WPLUSH2HQQ,wh_ALT_0M,wh_ALT_0Mf05"
         elif [[ $altproc == "ALT_L1" ]]; then 
         whsamples="WMINUSH2HQQ,WPLUSH2HQQ,WH_ALT0L1f05ph0,wh_ALT_L1"
         else
@@ -82,16 +82,17 @@ if [[ $STEP == "yields" ]]; then
         tthsamples="TTH"
 	
     
-      python RunYields.py --cats "auto" --inputWSDirMap 2016preVFP=cards/signal_2016preVFP,2016postVFP=cards/signal_2016postVFP,2017=cards/signal_2017,2018=cards/signal_2018 --procs "GG2H,$tthsamples,$vbfsamples,$whsamples,$zhsamples" --mergeYears --doSystematics --skipZeroes --ext ${ext}_${altproc} --batch Rome --queue cmsan ${DROPT}
+     # python RunYields.py --cats "auto" --inputWSDirMap 2016preVFP=cards/2016preVFP,2016postVFP=cards/2016postVFP,2017=cards/2017,2018=cards/2018 --procs "GG2H,$tthsamples,$vbfsamples,$whsamples,$zhsamples" --mergeYears --skipZeroes --ext ${ext}_${altproc} --batch condor --queue longlunch ${DROPT}
+      python RunYields.py --cats "auto" --inputWSDirMap 2016preVFP=cards/2016preVFP,2016postVFP=cards/2016postVFP,2017=cards/2017,2018=cards/2018 --procs "$whsamples" --mergeYears --skipZeroes --ext ${ext}_${altproc} --batch condor --queue longlunch ${DROPT}
   done
 elif [[ $STEP == "datacards" ]]; then
-#    for fit in "xsec" "ALT_L1" "ALT_L1Zg" "ALT_0PH" "ALT_0M"
-    for fit in  "xsec"  
+   for fit in "ALT_0M"
+#    for fit in  "xsec"  
    do
 	echo "making datacards for all years together for type of fit: $fit"
-    python makeDatacard.py --years 2016preVFP,2016postVFP,2017,2018 --ext ${ext}_${fit} --prune --doSystematics --output "Datacard_${fit}" --pruneCat RECO_VBFLIKEGGH_Tag1,RECO_VBFLIKEGGH_Tag0 
-	python cleanDatacard.py --datacard "Datacard_${fit}.txt" --factor 2 --removeDoubleSided
-	mv "Datacard_${fit}_cleaned.txt" "Datacard_${fit}.txt"
+    python makeDatacard.py --years 2016preVFP,2016postVFP,2017,2018 --ext ${ext}_${fit} --prune  --output "Datacard_${ext}_${fit}" --pruneCat RECO_VBFLIKEGGH_Tag1,RECO_VBFLIKEGGH_Tag0 
+	python cleanDatacard.py --datacard "Datacard_${ext}_${fit}.txt" --factor 2 --removeDoubleSided
+	mv "Datacard_${ext}_${fit}_cleaned.txt" "Datacard_${ext}_${fit}.txt"
 
     done
 
