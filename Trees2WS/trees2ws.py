@@ -174,12 +174,12 @@ for cat in cats:
   #print list(df.columns ) 
   # Add NLO scale factor 
   # a lot of jobs fails in the production of the tree so we want to reweight them taking into account it
-  if opt.year == '2018' and "ALT" not in opt.productionMode and "vbf" in opt.productionMode:
+  if opt.year == '2018' and "ALT" not in opt.productionMode and "vbf" in opt.productionMode and opt.inputMass == '125':
       df['weight'] = df['weight'] *1.5* 100./43.
-    
+
  # a lot of jobs fails in the production of the tree so we want to reweight them taking into account it
-  elif opt.year == '2018' and opt.productionMode and "ggh" in opt.productionMode:
-      print("ripesamento ggh")
+  elif opt.year == '2018' and opt.productionMode and "ggh" in opt.productionMode and opt.inputMass == '125':
+  #    print("ripesamento ggh")
       df['weight'] = df['weight']* 100./80.
   print('-------------------')
   tot = tot + df['weight'].sum()
@@ -366,6 +366,6 @@ for stxsId in data[stxsVar].unique():
   current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
   filename = 'Total_Yields.txt'
   with open(filename, "a") as file:    
-      file.write("{} - Prod mode: {} - Total Weight: {}\n".format(current_date, opt.productionMode, tot))
+      file.write("{} -Year: {} -  Prod mode: {} - Mass: {} - Total Weight: {}\n".format(current_date,opt.year,opt.inputMass, opt.productionMode, tot))
 
   print('Total Weight = '+str(tot))
