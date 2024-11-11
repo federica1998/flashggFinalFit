@@ -8,6 +8,7 @@
 import os, sys
 import re
 from optparse import OptionParser
+from datetime import datetime
 
 def get_options():
   parser = OptionParser()
@@ -141,6 +142,7 @@ data = pandas.DataFrame()
 if opt.doSystematics: sdata = pandas.DataFrame()
 
 # Loop over categories: fill dataframe
+tot = 0
 for cat in cats:
 #for cat in cats:
   print " --> Extracting events from category: %s"%cat
@@ -171,22 +173,16 @@ for cat in cats:
   df = pandas.concat(dfs.values(), axis=1)
   #print list(df.columns ) 
   # Add NLO scale factor 
-  if "vbf" in opt.productionMode and "ALT" in opt.productionMode: 
-      df['weightNLO'] = df['weight']* df['vbfNLOweight'] 
   # a lot of jobs fails in the production of the tree so we want to reweight them taking into account it
-  elif opt.year == '2018' and "ALT" not in opt.productionMode and "vbf" in opt.productionMode:
-      df['weightNLO'] = df['weight'] * 100./43.
-      print("ripesamento VBF")
+  if opt.year == '2018' and "ALT" not in opt.productionMode and "vbf" in opt.productionMode:
+      df['weight'] = df['weight'] *1.5* 100./43.
+    
  # a lot of jobs fails in the production of the tree so we want to reweight them taking into account it
   elif opt.year == '2018' and opt.productionMode and "ggh" in opt.productionMode:
       print("ripesamento ggh")
-      df['weightNLO'] = df['weight']* 100./80.
-  elif "wh" in opt.productionMode and "ALT" in opt.productionMode:
-      df['weightNLO'] = df['weight']* df['vhhadNLOweight'] 
-  elif "zh" in opt.productionMode and "ALT" in opt.productionMode:
-      df['weightNLO'] = df['weight']* df['vhhadNLOweight'] 
-  else : df['weightNLO'] = df['weight']
+      df['weight'] = df['weight']* 100./80.
   print('-------------------')
+  tot = tot + df['weight'].sum()
   print(df['weight'].sum())
     
   # Add STXS splitting var if splitting necessary
@@ -316,7 +312,7 @@ for stxsId in data[stxsVar].unique():
     aset = make_argset(ws,varNames)
 
     # Convert tree to RooDataset and add to workspace
-    d= ROOT.RooDataSet(dName,dName,t,aset,'','weightNLO')
+    d= ROOT.RooDataSet(dName,dName,t,aset,'','weight')
     getattr(ws,'import')(d)
 
     # Delete trees and RooDataSet from heap
@@ -367,3 +363,9 @@ for stxsId in data[stxsVar].unique():
   fout.Close()
   ws.Delete()
   fout.Delete()
+  current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+  filename = 'Total_Yields.txt'
+  with open(filename, "a") as file:    
+      file.write("{} - Prod mode: {} - Total Weight: {}\n".format(current_date, opt.productionMode, tot))
+
+  print('Total Weight = '+str(tot))
