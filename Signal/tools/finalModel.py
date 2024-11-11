@@ -137,6 +137,7 @@ class FinalModel:
   def buildXSBRSplines(self):
     mh = np.linspace(120.,130.,101)
     # the alternative models have only the nominal mass. Take the trends from the SM one
+    if "ALT" in self.proc: self.proc_full = self.proc
     if "ALT" in self.proc: self.proc = self.proc.split("_")[0]
     # XS
     fp = self.xsbrMap[self.proc]['factor'] if 'factor' in self.xsbrMap[self.proc] else 1.
@@ -161,7 +162,7 @@ class FinalModel:
           print " --> [ERROR] effAcc json file (%s) does not exist for mass point = %s. Run getEffAcc first."%(jfname,mp)
           sys.exit(1)
         with open(jfname,'r') as jf: ea_data = json.load(jf)
-        ea.append(float(ea_data['%s__%s'%(self.proc,self.cat)]))
+        ea.append(float(ea_data['%s__%s'%(self.proc_full,self.cat)]))
       else:
         sumw = self.datasets[mp].sumEntries()
         self.MH.setVal(float(mp))
