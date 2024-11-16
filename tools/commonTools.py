@@ -104,6 +104,38 @@ def signalFromFileName(_fileName):
       p += "f05"
   return p,d
 
+
+def extFromFileName(_fileName):
+  p, d = None, None
+
+  if "GluGlu"   in _fileName: p = "GG2H"
+  elif "VBF"    in _fileName: p = "VBF"
+  elif "Wminus" in _fileName: p = "WMINUSH2HQQ"
+  elif "Wplus"  in _fileName: p = "WPLUSH2HQQ"
+  elif "WHiggs" in _fileName: p = "wh"
+  elif "ZH"     in _fileName: p = "QQ2HLL"
+  elif "ttH"    in _fileName: p = "TTH"
+  else:
+    print " --> [ERROR]: cannot extract production mode from input file name. Please update tools.commonTools.signalFromFileName"
+    exit(1)
+  if "JHUGen" in _fileName:
+    if "0L1Zg" in _fileName:
+      p += "_ALT_L1Zg"
+    elif "0L1" in _fileName:
+      p += "_ALT_L1"
+    elif "0M" in _fileName:
+      p += "_ALT_0M"
+    elif "0PH" in _fileName:
+      p += "_ALT_0PH"
+    elif "0PM" in _fileName:
+      p += "_ALT_0PM"
+    else:
+      print " --> [ERROR]: cannot extract production mode from input file name. Please update tools.commonTools.signalFromFileName"
+      exit(1)
+    if "f05ph0" in _fileName:
+      p += "f05"
+  return p,d
+
 # Function to return mass from input file name
 def massFromFileName(_fileName):
   m = None
@@ -173,6 +205,7 @@ procToDatacardNameMap['WPLUSH2HQQ'] = 'wh_plus'
 procToDatacardNameMap['QQ2HLL'] = 'zh'
 
 procToDatacardNameMap['VBF_ALT_0PH'] = 'qqH_ALT_0PH'
+procToDatacardNameMap['VBF_ALT_0PM'] = 'qqH'
 procToDatacardNameMap['VBF_ALT_0PHf05'] = 'qqH_ALT_0PHf05'
 procToDatacardNameMap['VBF_ALT_0M'] = 'qqH_ALT_0M'
 procToDatacardNameMap['VBF_ALT_0Mf05'] = 'qqH_ALT_0Mf05'
@@ -205,3 +238,5 @@ def procToDatacardName( _proc ):
   if k in procToDatacardNameMap: 
     _proc = re.sub( k, procToDatacardNameMap[k], _proc )
   return _proc
+
+

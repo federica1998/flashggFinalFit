@@ -55,13 +55,18 @@ for year in ${years[*]}
 do
     if [[ $year == $YEAR ]] || [[ $YEAR == "all" ]]; then
 	if [[ $STEP == "t2ws-mc" ]]; then
-	    python RunWSScripts.py --inputConfig config.py --inputDir Merged/${year}  --mode trees2ws --modeOpts "--doNOTAG"  --year ${year} --ext ${year} ${QUEUE} ${DROPT}
+	    python RunWSScripts.py --inputConfig config.py --inputDir Merged/${year}  --mode trees2ws   --year ${year} --ext ${year} ${QUEUE} ${DROPT}
 	elif [[ $STEP == "mkdir" ]]; then
         mkdir -p ~/eos/AC/cards
         mkdir -p ~/eos/AC/cards/${year}
+        
     elif [[ $STEP == "clear" ]]; then
         python3 ChangeName.py
         python3 CardsReplacement.py
+        python3 NOTAG_Yield.py --tree_dir Merged
+        ls -l cards_NOTAG/*/*.root | wc -l
+        echo "it should be 160"
+        echo "if not there's an error"
     elif [[ $STEP == "t2ws-data" ]]; then
 	    python RunWSScripts.py --inputConfig config.py --inputDir trees/data_${year} --mode trees2ws_data --year ${year} --ext ${year} ${QUEUE} ${DROPT}    
 	elif [[ $STEP == "hadd-mc" ]]; then
