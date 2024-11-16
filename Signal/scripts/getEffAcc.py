@@ -25,6 +25,7 @@ def get_options():
   parser.add_option('--inputWSDir', dest='inputWSDir', default='', help='Input WS directory')
   parser.add_option('--ext', default='test', help='Extension (to define analysis)')
   parser.add_option('--procs', dest='procs', default='', help='Signal processes')
+  parser.add_option('--year', dest='year', default='', help='year')
   parser.add_option('--massPoints', dest='massPoints', default='120,125,130', help='MH')
   parser.add_option('--skipCOWCorr', dest='skipCOWCorr', default=False, action="store_true", help="Skip centralObjectWeight correction for events in acceptance")
   parser.add_option('--doSTXSFractions', dest='doSTXSFractions', default=False, action="store_true", help="Fractional cross sections in each STXS bin (per stage0 process)")
@@ -35,10 +36,10 @@ def get_options():
 WSFileNames = extractWSFileNames(opt.inputWSDir)
 if not WSFileNames: leave()
 allCats = extractListOfCats(WSFileNames)
-if containsNOTAG(WSFileNames): allCats += ",NOTAG"
-else:
-  print " --> [ERROR] getEffAcc.py requires NOTAG dataset. Must use standard weights method in signalFit.py"
-  leave()
+#if containsNOTAG(WSFileNames): allCats += ",NOTAG"
+#else:
+ # print " --> [ERROR] getEffAcc.py requires NOTAG dataset. Must use standard weights method in signalFit.py"
+  #leave()
 
 # Define dataframe to store yields: cow = centralObjectWeight
 if opt.skipCOWCorr: columns_data = ['massPoint','proc','cat','granular_key','nominal_yield']
@@ -52,16 +53,21 @@ for _mp in opt.massPoints.split(","):
   for _proc in opt.procs.split(","):
     print "    * proc = %s"%_proc
     # Find corresponding file
+    if ("ALT" in _proc) and (_mp != '125'): continue
+    print("%s/output*M%s*%s.root"%(opt.inputWSDir,_mp,_proc))
     _WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,_mp,_proc))[0]
+    
     f = ROOT.TFile(_WSFileName,'read')
     inputWS = f.Get(inputWSName__)
 
     # Loop over categories
     for _cat in allCats.split(","):
-      nominalDataName = "%s_%s_%s_%s"%(procToData(_proc.split("_")[0]),_mp,sqrts__,_cat)
+      nominalDataName = "%s_%s_%s_%s"%(procToData(_proc),_mp,sqrts__,_cat)
       _granular_key = "%s__%s"%(_proc,_cat)
+      #print(nominalDataName)
       nominalData = inputWS.data(nominalDataName)
       _nominal_yield = nominalData.sumEntries()
+      
       # Central Object Weight corrections (for events in acceptance)
       if not opt.skipCOWCorr:
         # Loop over events and sum w/ centralObjectWeight
@@ -95,14 +101,23 @@ for _mp in opt.massPoints.split(","):
   for ir,r in df.iterrows():
     if r['cat'] == "NOTAG": continue
     if opt.skipCOWCorr: proc_yield = df[df['proc']==r['proc']].nominal_yield.sum()
-    else: proc_yield = df[df['proc']==r['proc']].nominal_yield_COWCorr.sum()
-    ea = r['nominal_yield']/proc_yield
+    else: 
+
+      proc_yield = df[df['proc']==r['proc']].nominal_yield_COWCorr.sum()
+
+    env = os.environ['CMSSW_BASE']
+    
+    with open(env+'/src/flashggFinalFit/Trees2WS/NOTAG_entries.json', 'r') as file:
+      p_yield_NOTAG  = json.load(file)
+    #ea = r['nominal_yield']/proc_yield
+    ea = r['nominal_yield']/(proc_yield+p_yield_NOTAG[r['proc']+'_'+_mp+'_'+opt.year])
     if ea < 0.: ea = 0.
     effAcc[r['granular_key']] = ea
   
   # Write to file
   if opt.skipCOWCorr: outfileName = "%s/outdir_%s/getEffAcc/json/effAcc_M%s_%s_skipCOWCorr.json"%(swd__,opt.ext,_mp,opt.ext)
   else: outfileName = "%s/outdir_%s/getEffAcc/json/effAcc_M%s_%s.json"%(swd__,opt.ext,_mp,opt.ext)
+  print(outfileName)
   with open(outfileName,'w') as jsonfile: json.dump(effAcc,jsonfile)
 
 # Calculate fractional cross section of each STXS bin (in terms of stage0 bin) for normalisation: output in txt file
