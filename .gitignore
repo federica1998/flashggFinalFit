@@ -43,9 +43,19 @@ AutoDict_*
 Signal/outdir_*
 Signal/card*
 Trees2WS/TEST*
+Trees2WS/outdir*
+Plots/SplusBModel*
+Trees2WS/Merge*
+Plots/pkl*
+Trees2WS/card*
+Trees2WS/scrip*
+
 
 Background/outdir_*
 Background/cards*
+Background/bin*
+Background/lib*
+Background/plot*
 
 
 Combine/runFits*
