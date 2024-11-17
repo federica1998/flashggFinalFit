@@ -39,6 +39,7 @@ for m in models:
     result = []
     for pkl_file in pkl_files:
 
+
         result_dict = {}
         file_name = os.path.basename(pkl_file)
         data = []
@@ -46,6 +47,7 @@ for m in models:
             data.append(pickle.load(f))
         dataFrame = pd.DataFrame()
         
+
 
         lumiMap = {'2016':36.33, '2016preVFP': 19.51, '2016postVFP': 16.80, '2017':41.48, '2018':59.83, 'combined':137.62, 'merged':137.62}
         
@@ -55,12 +57,10 @@ for m in models:
 
             df=df.append(d["year"] )
             df=df.append(d["cat"])
-         #   df=df.append(d["procOriginal"])
-            #df=df.append(d["proc"])
             df=df.append(d["proc_s0"])
             df=df.append(d["nominal_yield"] )
-        # df=df.append(d["inputWSFile"] )
-            #df=df.append(d["rate"] )
+
+
         
             dataFrame = pd.concat([dataFrame, df.T], ignore_index=True)
         

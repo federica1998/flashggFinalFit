@@ -27,8 +27,8 @@ esac
 shift
 done
 
-bestfit="../Combine/runFitsxsec_xsec_savedWS/higgsCombine_bestfit_syst_obs_xsec_r_ggH.MultiDimFit.mH125.root"
-yields="../Datacard/yields_2023-03-02_xsec"
+bestfit="/eos/cms/store/group/phys_higgs/cmshgg/fderiggi/runFits_JulyProduction/runFitsxsec_xsec/higgsCombine_bestfit_syst_xsec_r_ggH.MultiDimFit.mH125.38.root"
+yields="../Datacard/yields_2024-07-12_xsec"
 
 if [[ $STEP == "spb" ]]; then
     python makeSplusBModelPlot.py --inputWSFile $bestfit --loadSnapshot MultiDimFit --cats all --doZeroes --pdir . --ext _test --unblind
@@ -38,16 +38,18 @@ elif [[ $STEP == "bands" ]]; then
     python makeToys.py --inputWSFile $bestfit --loadSnapshot MultiDimFit --nToys 500 --POIs r_ggH,r_VBF,r_top,r_VH --batch Rome --queue cmsan --ext _test_with_bands
 elif [[ $STEP == "spb2-calc" ]]; then
     # first time, with bands calculation
-    python makeSplusBModelPlot.py --inputWSFile $bestfit --loadSnapshot MultiDimFit --cats all --doZeroes --pdir . --ext _test_with_bands --unblind --doBands --saveToyYields --doSumCategories --doCatWeights --saveWeights
+    python makeSplusBModelPlot.py --inputWSFile $bestfit --loadSnapshot MultiDimFit --cats all --doZeroes --pdir . --ext _test_with_bands --unblind --doBands -saveToyYields --doSumCategories --doCatWeights --saveWeights
 elif [[ $STEP == "spb2" ]]; then
     # next times, when toys are merged
     python makeSplusBModelPlot.py --inputWSFile $bestfit --loadSnapshot MultiDimFit --cats all --doZeroes --pdir . --ext _test_with_bands --unblind --doBands --loadToyYields SplusBModels_test_with_bands/toys/toyYields_CMS_hgg_mass.pkl --doSumCategories --doCatWeights --saveWeights
 elif [[ $STEP == "tables" ]]; then
     # make tables with yields
     groups=("ggh" "qqh" "vh" "top")
+    groups=("vh")
     for group in ${groups[*]}
     do
-	python makeYieldsTables.py --inputPklDir $yields --loadCatInfo pkl/catInfo_allCats.pkl --group $group
+	echo "python makeYieldsTables.py --inputPklDir $yields --loadCatInfo pkl/catInfo_allCats.pkl --group $group --translateCats cats_latex.json"
+#	python makeYieldsTables.py --inputPklDir $yields --loadCatInfo pkl/catInfo_allCats.pkl --group $group --translateCats cats_latex.json
     done
 else
     echo "Step $STEP is not one among yields,datacard,links. Exiting."

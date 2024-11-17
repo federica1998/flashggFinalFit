@@ -35,7 +35,7 @@ esac
 shift
 done
 
-fggDir="/cmshome/dimarcoe/vbfac/flashgg/CMSSW_10_6_29/src/"
+fggDir="/eos/home-f/fderiggi/CMSSW_10_6_29/src/"
 
 DROPT=""
 if [[ $DR ]]; then
@@ -55,11 +55,15 @@ for year in ${years[*]}
 do
     if [[ $year == $YEAR ]] || [[ $YEAR == "all" ]]; then
 	if [[ $STEP == "t2ws-mc" ]]; then
-	    python RunWSScripts.py --inputConfig config.py --inputDir Merged/${year}  --mode trees2ws   --year ${year} --ext ${year} ${QUEUE} ${DROPT}
+	    python RunWSScripts.py --inputConfig config.py --inputDir  Merged/${year}  --mode trees2ws   --year ${year} --ext ${year} ${QUEUE} ${DROPT}
+    elif [[ $STEP == "t2ws-mc-ggh" ]]; then
+	    python RunWSScripts.py --inputConfig config.py --inputDir  MergeGGH  --mode trees2ws   --year ${year} --ext ggH_${year} ${QUEUE} ${DROPT}
+    elif [[ $STEP == "t2ws-mc-vbf" ]]; then
+	    python RunWSScripts.py --inputConfig config.py --inputDir MergeVBF  --mode trees2ws   --year ${year} --ext vbf_${year} ${QUEUE} ${DROPT}
+
 	elif [[ $STEP == "mkdir" ]]; then
         mkdir -p ~/eos/AC/cards
-        mkdir -p ~/eos/AC/cards/${year}
-        
+        mkdir -p ~/eos/AC/cards/${year}    
     elif [[ $STEP == "clear" ]]; then
         python3 ChangeName.py
         python3 CardsReplacement.py
@@ -70,7 +74,8 @@ do
     elif [[ $STEP == "t2ws-data" ]]; then
 	    python RunWSScripts.py --inputConfig config.py --inputDir trees/data_${year} --mode trees2ws_data --year ${year} --ext ${year} ${QUEUE} ${DROPT}    
 	elif [[ $STEP == "hadd-mc" ]]; then
-	    python RunWSScripts.py --inputDir trees/signal_${year} --mode haddMC --year ${year} --ext ${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
+	    echo python RunWSScripts.py --inputDir MergeVBF  --mode haddMC --year ${year} --ext vbf_${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
+	    python RunWSScripts.py --inputDir MergeGGH  --mode haddMC --year ${year} --ext ggH_${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
 	elif [[ $STEP == "hadd-data" ]]; then
 	    python RunWSScripts.py --inputDir trees/data_${year} --mode haddData --year ${year} --ext ${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
 	else

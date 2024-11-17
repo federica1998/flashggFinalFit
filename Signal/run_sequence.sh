@@ -61,26 +61,28 @@ if [[ $STEP == "fTest" ]] || [[ $STEP == "calcPhotonSyst" ]] || [[ $STEP == 'sig
 	fi
     done
 elif [[ $STEP == 'packager' ]]; then
-    python RunPackager.py --cats "auto" --inputWSDir /pnfs/roma1.infn.it/data/cms/store/user/emanuele/vbfhgg/WS_2023_02_13/signal_2016preVFP/ --outputExt packaged --exts 2023-02-13_year2016preVFP,2023-02-13_year2016postVFP,2023-02-13_year2017,2023-02-13_year2018 --mergeYears --batch condor --queue espresso ${DROPT}
+    python RunPackager.py --cats "auto" --inputWSDir /afs/cern.ch/user/f/fderiggi/AC/CMSSW_10_2_13/src/flashggFinalFit/Signal/cards/signal_2017 --outputExt packaged --exts 2024-09-01_year2016preVFP,2024-09-01_year2016postVFP,2024-09-01_year2017,2024-09-01_year2018 --mergeYears --batch condor --queue espresso ${DROPT}
 elif [[ $STEP == 'plotter' ]]; then
     smprocs=("GG2H" "VBF" "TTH" "WMINUSH2HQQ" "WPLUSH2HQQ" "QQ2HLL")
-    #smprocs=( "WMINUSH2HQQ" "WPLUSH2HQQ")
+    smprocs=( "wh_ALT_0Mf05" "wh_ALT_0M" "VBF_ALT_0M" "VBF_ALT_0Mf05" "ZH_ALT0Mf05ph0" "ZH_ALT0M" )
     smprocs_csv=$(IFS=, ; echo "${smprocs[*]}")
     # just plot all the (SM) processes, all the categories, all the years together. Can be split with --year ${YEAR}. Do not include BSM to maintain the expected total yield for SM
     echo "Now plotting all categories for these SM processes: $smprocs_csv"
-    python RunPlotter.py --procs $smprocs_csv --cats "all" --year 2016preVFP,2016postVFP,2017,2018 --ext packaged --outdir plots
+    echo "RunPlotter.py --procs $smprocs_csv --cats "all" --year 2016preVFP,2016postVFP,2017,2018 --ext signal --outdir plots --translateCats ../Plots/cats_latex.json"
+    #python RunPlotter.py --procs $smprocs_csv --cats "all" --year 2016preVFP,2016postVFP,2017,2018 --ext signal --outdir plots --translateCats../Plots/cats_latex.json
     # split by category, all processes together
     significantCats=("RECO_VBFTOPO_ACGGH_Tag0" "RECO_VBFTOPO_ACGGH_Tag1" "RECO_VBFTOPO_ACVBFBSM_Tag0" "RECO_VBFTOPO_ACVBFBSM_Tag1" "RECO_VBFTOPO_ACVBFSM_Tag0""RECO_VBFTOPO_ACVHHADBSM_Tag0" "RECO_VBFTOPO_ACVHHADBSM_Tag1" "RECO_VBFTOPO_ACVHHADSM_Tag0" "RECO_VBFTOPO_ACVHHADSM_Tag1" "RECO_VBFTOPO_ACVHHADSM_Tag2")
+    significantCats=("RECO_VH_MET_Tag0" "RECO_VH_MET_Tag1" "RECO_VH_MET_Tag2" "RECO_VH_MET_Tag3" "RECO_WH_LEP_Tag0" "RECO_WH_LEP_Tag1" "RECO_WH_LEP_Tag2" "RECO_WH_LEP_Tag3" "RECO_ZH_LEP_Tag0" "RECO_ZH_LEP_Tag1")
     significantCats_csv=$(IFS=, ; echo "${significantCats[*]}")
     for cat in ${significantCats[*]}
     do
     	echo "=> Now plotting all processes together for cat: $cat"
-    	python RunPlotter.py --procs $smprocs_csv --cats $cat --year 2016preVFP,2016postVFP,2017,2018 --outdir plots --ext packaged --outdir plots #--translateCats ../Plots/cats.json
+    	#python RunPlotter.py --procs $smprocs_csv --cats $cat --year 2016preVFP,2016postVFP,2017,2018 --outdir plots --ext packaged --outdir plots --translateCats ../Plots/cats_latex.json
     done
     # split by process, all the categories together (the SM + some alternatives)
     for proc in ${smprocs[*]}
     do
     	echo "=> Now plotting proc $proc for all categories"
-    	python RunPlotter.py --procs $proc --cats "all" --year 2016preVFP,2016postVFP,2017,2018 --ext packaged --outdir plots
+    	python RunPlotter.py --procs $proc --cats "all" --year 2016preVFP,2016postVFP,2017,2018 --ext packaged --outdir plots --translateCats ../Plots/cats_latex.json
     done
 fi

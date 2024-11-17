@@ -73,7 +73,7 @@ if opt.step == "Toy":
   print "  --> Finished submitting files"
 
 elif opt.step == "Fit":
-
+   
   cmdLine = "mkdir -p  %s"%(fit_jobDir)
   run(cmdLine)
   _executable = "sub_%s"%(opt.ext)
@@ -87,9 +87,8 @@ elif opt.step == "Fit":
 
 
   for i,f in enumerate(FToy):
-      if not (i > 100 and i < 200)  : continue
+     # if not (i > 100 and i < 300)  : continue
       _cmd = "combine -m 125.3800 -d ../../Datacard_ALT_0M.root -M MultiDimFit -P %s --algo singles  --floatOtherPOIs 1  --redefineSignalPOIs muV,muf,fa3_ggH,fa3_ggH,CMS_zz4l_fai1  --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1.,fa3_ggH=0. --robustFit=1 --setRobustFitAlgo=Minuit2,Migrad  --X-rtd FITTER_NEW_CROSSING_ALGO  --setRobustFitTolerance=0.5 --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND --cminFallbackAlgo Minuit2,0:1.  --saveInactivePOI 1  --saveWorkspace --cminDefaultMinimizerStrategy 0  --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants  --X-rtd MINIMIZER_multiMin_maskConstraints  --X-rtd MINIMIZER_multiMin_maskChannels=2  --setParameterRanges muV=0.0,4.0:muf=0.0,10.0:fa3_ggH=-0.5.,0.5.:CMS_zz4l_fai1=-0.001.,0.001  -t 1 -n _%ssplit%s_  --toysFile=%s/%s; mv higgsCombine*_%ssplit%s_* %s/biasStudy_split%s_fits.root"%(opt.poi,opt.poi,i,toy_outputDir,f,opt.poi,i,fit_outputDir,i)
-     # _cmd = "combine -m 125.3800 -d ../../Datacard_ALT_0M.root -M MultiDimFit -P %s --algo singles  --floatOtherPOIs 1  --redefineSignalPOIs muV,muf,fa3_ggH,fa3_ggH,CMS_zz4l_fai1  --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1.,fa3_ggH=0.,n_exp_binRECO_WH_LEP_Tag0_proc_bkg_mass=4 --robustFit=1 --setRobustFitAlgo=Minuit2,Migrad  --X-rtd FITTER_NEW_CROSSING_ALGO  --setRobustFitTolerance=0.5 --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND --cminFallbackAlgo Minuit2,0:1.  --saveInactivePOI 1  --saveWorkspace --cminDefaultMinimizerStrategy 0  --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants  --X-rtd MINIMIZER_multiMin_maskConstraints  --X-rtd MINIMIZER_multiMin_maskChannels=2  --setParameterRanges muV=0.0,4.0:muf=0.0,10.0:fa3_ggH=-0.5.,0.5.:CMS_zz4l_fai1=-0.001.,0.001  -t 1 -n _%ssplit%s_  --toysFile=%s/%s; mv higgsCombine*_%ssplit%s_* %s/biasStudy_split%s_fits.root"%(opt.poi,opt.poi,i,toy_outputDir,f,opt.poi,i,fit_outputDir,i)
       _f.write("%s\n"%_cmd)
 
      
@@ -104,8 +103,8 @@ elif opt.step == "Plot":
 
  
   
-  label_dict = {"muf":r'\frac{2(\mu_{V}-1)}{\sigma^{+} + \sigma^{-}} ' ,
-                "muV":r'\frac{2(\mu_{f}-1)}{\sigma^{+} + \sigma^{-}} ' ,
+  label_dict = {"muf":r'\frac{2(\mu_{f}-1)}{\sigma^{+} + \sigma^{-}} ' ,
+                "muV":r'\frac{2(\mu_{V}-1)}{\sigma^{+} + \sigma^{-}} ' ,
                 "CMS_zz4l_fai1":r'\frac{2f_{a3}}{\sigma^{+} + \sigma^{-}} '}
 
   label_color = {"CMS_zz4l_fai1":ROOT.kMagenta-9,
@@ -170,7 +169,7 @@ elif opt.step == "Plot":
   pullHist.Draw()
   
   r.gStyle.SetOptFit(11111)
-  pullHist.Fit('gaus')
+  #pullHist.Fit('gaus')
   canv.SaveAs('BiasStudy_%s.pdf'%(opt.poi))
   canv.SaveAs('BiasStudy_%s.png'%(opt.poi))
 

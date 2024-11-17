@@ -64,6 +64,7 @@ RooRealVar *intLumi_ = new RooRealVar("IntLumi","hacked int lumi", 1000.);
 TRandom3 *RandomGen = new TRandom3();
 
 RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char* ext=""){
+
   
   if (type=="Bernstein") return pdfsModel.getBernstein(Form("%s_bern%d",ext,order),order); 
   else if (type=="Chebychev") return pdfsModel.getChebychev(Form("%s_cheb%d",ext,order),order); 
@@ -970,6 +971,7 @@ int main(int argc, char* argv[]){
 			//double check the best pdf!
 			int bestFitPdfIndex = getBestFitFunction(pdf,data,&catIndex,!verbose);
 			catIndex.setIndex(bestFitPdfIndex);
+    
 			std::cout << "// ------------------------------------------------------------------------- //" <<std::endl; 
 			std::cout << "[INFO] Created MultiPdf " << pdf->GetName() << ", in Category " << cat << " with a total of " << catIndex.numTypes() << " pdfs"<< std::endl;
 			storedPdfs.Print();

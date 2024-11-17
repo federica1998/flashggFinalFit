@@ -17,6 +17,7 @@
 #include "RooConstVar.h"
 #include "RooFitResult.h"
 #include "RooRandom.h"
+#include <stdio.h>
 
 #include "boost/algorithm/string/split.hpp"
 #include "boost/algorithm/string/classification.hpp"
@@ -92,6 +93,10 @@ RooAbsPdf* PdfModelBuilder::getChebychev(string prefix, int order){
 }
 
 RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
+
+  //if (order >3) {return NULL;}
+
+
   
   RooArgList *coeffList = new RooArgList();
   //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface
@@ -123,9 +128,9 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
   } else if (order==6) {
 	RooBernsteinFast<6> *bern = new RooBernsteinFast<6>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
   	return bern;
-//  } else if (order==7) {
-//	RooBernsteinFast<7> *bern = new RooBernsteinFast<7>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
- // 	return bern;
+  } else if (order==7) {
+	RooBernsteinFast<7> *bern = new RooBernsteinFast<7>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+  	return bern;
   } else {
 	return NULL;
   }

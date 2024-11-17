@@ -41,7 +41,7 @@ def get_options():
   parser.add_option('--skipCOWCorr', dest='skipCOWCorr', default=False, action="store_true", help="Skip centralObjectWeight correction for events in acceptance. Use if no centralObjectWeight in workspace")
   # For systematics:
   parser.add_option('--doSystematics', dest='doSystematics', default=False, action="store_true", help="Include systematics calculations and add to datacard")
-  parser.add_option('--ignore-warnings', dest='ignore_warnings', default=False, action="store_true", help="Skip errors for missing systematics. Instead output warning message")
+  parser.add_option('--ignore-warnings', dest='ignore_warnings', default=True, action="store_false", help="Skip errors for missing systematics. Instead output warning message")
   return parser.parse_args()
 (opt,args) = get_options()
 
@@ -81,8 +81,11 @@ data = pd.DataFrame( columns=columns_data )
 print " .........................................................................................."
 
 # Signal processes
+
 for year in years:
   for proc in procs:
+
+
 
     # Identifier
     _id = "%s_%s_%s_%s"%(proc,year,opt.cat,sqrts__)
@@ -202,6 +205,10 @@ if opt.doSystematics:
 	data['%s_yield'%s['name']] = '-'
 	if not opt.skipCOWCorr: data['%s_yield_COWCorr'%s['name']] = '-'
 
+
+#experimentalFactoryType_JetHEM={'JER': 'a_h', 'MuonIDWeight': 'a_w', 'JetHEM': 'a_h', 'JEC': 'a_h', 'TriggerWeight': 'a_w', 'MvaShift': 'a_h', 'LooseMvaSF': 'a_w', 'JetBTagCutWeight': 'a_w', 'SigmaEOverEShift': 'a_h', 'MuonIsoWeight': 'a_w', 'PreselSF': 'a_w', 'PUJIDShift': 'a_h', 'ElectronIDWeight': 'a_w', 'prefireWeight': 'a_w', 'ElectronRecoWeight': 'a_w', 'electronVetoSF': 'a_w', 'JetBTagReshapeWeight': 'a_w'}
+#experimentalFactoryType_Not_JetHEM= {'JER': 'a_h', 'MuonIDWeight': 'a_w',  'JEC': 'a_h', 'TriggerWeight': 'a_w', 'MvaShift': 'a_h', 'LooseMvaSF': 'a_w', 'JetBTagCutWeight': 'a_w', 'SigmaEOverEShift': 'a_h', 'MuonIsoWeight': 'a_w', 'PreselSF': 'a_w', 'PUJIDShift': 'a_h', 'ElectronIDWeight': 'a_w', 'prefireWeight': 'a_w', 'ElectronRecoWeight': 'a_w', 'electronVetoSF': 'a_w', 'JetBTagReshapeWeight': 'a_w'}
+
 # Loop over signal rows in dataFrame: extract yields (nominal & systematic variations)
 totalSignalRows = float(data[data['type']=='sig'].shape[0])
 for ir,r in data[data['type']=='sig'].iterrows():
@@ -241,6 +248,11 @@ for ir,r in data[data['type']=='sig'].iterrows():
     # For experimental systematics: skip NOTAG events
     if "NOTAG" not in r['cat']:
       # Skip centralObjectWeight correction as concerns events in acceptance
+      #if ((r['year']=="2018") and ((r['proc']!='qqH_2018_hgg') and (r['proc']!='qqH_ALT_0PH_2018_hgg') and (r['proc']!='wh_ALT_0PHf05_2018_hgg')  and (r['proc']!='qqH_ALT_L1f05_2018_hgg') and (r['proc']!='wh_ALT_0PH_2018_hgg') and (r['proc']!='qqH_ALT_0PHf05_2018_hgg') and (r['proc']!='zh_ALT_0PHf05_2018_hgg') and ((r['proc']!='zh_ALT_L1f05_2018_hgg') )  and ((r['proc']!='qqH_ALT_L1_2018_hgg') )  and (r['proc']!='ggH_2018_hgg') and (r['proc']!='qqH_ALT_L1_2018') and (r['proc']!='qqH_ALT_0M_2018_hgg')) ):
+       #  print("----------------------")
+       #  experimentalFactoryType = experimentalFactoryType_JetHEM
+      #else:experimentalFactoryType = experimentalFactoryType_Not_JetHEM
+      #print(r['year'],experimentalFactoryType)
       experimentalSystYields = calcSystYields(r['nominalDataName'],contents,inputWS,experimentalFactoryType,skipCOWCorr=True,proc=r['proc'],year=r['year'],ignoreWarnings=opt.ignore_warnings)
       for s,f in experimentalFactoryType.iteritems():
 	if f in ['a_w','a_h']: 

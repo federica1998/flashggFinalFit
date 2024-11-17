@@ -33,13 +33,16 @@ AutoDict_*
 *.tmp
 *.pcm
 *.o
-
-
+*.swo
+*.swm
+*.swn
+*Test*
+*TEST*
 
 # Output dirs in signal and bkg
 Signal/outdir_*
 Signal/card*
-
+Trees2WS/TEST*
 
 Background/outdir_*
 Background/cards*
@@ -52,5 +55,9 @@ Combine/Models*
 Combine/plot*
 
 Datacard/yields*
+Datacard/cards*
+Datacard/Models*
+Merge
+
 
 Combine/Checks/Bias_nominal/*/

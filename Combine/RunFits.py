@@ -125,6 +125,8 @@ for fidx in range(len(fits)):
   if opt.snapshotWSFile != '': d_opts = '-d %s --snapshotName MultiDimFit'%opt.snapshotWSFile
   else:
     #d_opts = '-d ../Datacard%s_%s.root'%(opt.ext,opt.mode)
+    if "-d" in _fit_opts: d_opts = ''
+    else: d_opts = '-d %s/src/flashggFinalFit/Combine/Datacard_%s.root'%(os.environ['CMSSW_BASE'],opt.ext)
     d_opts = '-d %s/src/flashggFinalFit/Combine/Datacard_%s.root'%(os.environ['CMSSW_BASE'],opt.ext)
 
   # If setParameters already in _fit_opts then add to fit opts and set pdfOpts = ''

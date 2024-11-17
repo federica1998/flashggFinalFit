@@ -117,4 +117,3 @@ def writeSubFiles(ext,file, batch = 'condor'):
   cmdLine = "cd %s; condor_submit %s.sub; cd %s"%(_jobdir,_executable,twd__)
   print(cmdLine)
   #run(cmdLine)
-

@@ -54,11 +54,12 @@ def writeSubFiles(_opts):
   if _opts['batch'] == "condor":
     _executable = "condor_%s_%s"%(_opts['mode'],_opts['ext'])
     _f = open("%s/%s.sh"%(_jobdir,_executable),"w") # single .sh script split into separate jobs
-    writePreamble(_f)
+    
 
     # Write details depending on mode
     if( _opts['mode'] == "trees2ws" ):
       # Extract list of files
+      writePreamble(_f)
       tfiles = glob.glob("%s/*.root"%_opts['inputDir'])
       # Run separate command per file
       for tfidx,tf in enumerate(tfiles):
@@ -79,6 +80,7 @@ def writeSubFiles(_opts):
         _f.write("fi\n")
          
     elif( _opts['mode'] == "trees2ws_data" ):
+      writePreamble(_f)
       # Extract list of files
       tfiles = glob.glob("%s/*.root"%_opts['inputDir'])
       # Run separate command per file
@@ -90,20 +92,23 @@ def writeSubFiles(_opts):
         _f.write("fi\n")
 
     elif( _opts['mode'] == "haddMC" ):
+      writePreamble(_f,_otherBase=_opts['flashggPath'])
       # Extract list of ws folders: one for each process
       wsdirs = glob.glob("%s/ws_*"%_opts['inputDir']) 
       # Run separate command per process
       for widx,wsdir in enumerate(wsdirs):
+        print(widx,wsdir)
         # Extract process name
         p = "_".join(wsdir.split("/")[-1].split("_")[1:])
         # Define output file name
         outf = "_".join(re.sub("_%s.root"%p,"",glob.glob("%s/*.root"%wsdir)[0].split("/")[-1]).split("_")[0:-1])+"_%s.root"%p
         outfFullName = "%s/%s"%(_opts['outputWSDir'],outf)
-        _f.write("if [ $1 -eq %g ]; then\n"%tfidx)
-        _f.write("  hadd_workspaces %s %s/*.root\n"%(outfFullName,wsdir))
+        _f.write("if [ $1 -eq %g ]; then\n"%widx)
+        _f.write("  hadd_workspaces %s %s/%s/*.root\n"%(outfFullName,twd__,wsdir))
         _f.write("fi\n")
 
     elif( _opts['mode'] == "haddData" ):
+      writePreamble(_f)
       # Extract folder
       wsdir = "%s/ws"%_opts['inputDir']
       # Define output file name
@@ -175,18 +180,20 @@ def writeSubFiles(_opts):
         os.system("chmod 775 %s/%s_%g.sh"%(_jobdir,_executable,tfidx))
         
     elif( _opts['mode'] == "haddMC" ):
+      
       # Extract list of ws folders: one for each process
       wsdirs = glob.glob("%s/ws_*"%_opts['inputDir'])
       # Separate submission file per process
       for widx,wsdir in enumerate(wsdirs):
         _f = open("%s/%s_%g.sh"%(_jobdir,_executable,widx),"w")
+       
         writePreamble(_f,_otherBase=_opts['flashggPath'])
         # Extract process name
         p = "_".join(wsdir.split("/")[-1].split("_")[1:])
         # Define output file name: remove number from files
         outf = "_".join(re.sub("_%s.root"%p,"",glob.glob("%s/*.root"%wsdir)[0].split("/")[-1]).split("_")[0:-1])+"_%s.root"%p
         outfFullName = "%s/%s"%(_opts['outputWSDir'],outf)
-        _f.write("hadd_workspaces %s %s/*.root\n"%(outfFullName,wsdir))
+        _f.write("hadd_workspaces %s %s/%s/*.root\n"%(outfFullName,twd__,wsdir))
         _f.close()
         os.system("chmod 775 %s/%s_%g.sh"%(_jobdir,_executable,widx)) 
 
