@@ -52,11 +52,13 @@ if [[ $STEP == "fTest" ]] || [[ $STEP == "calcPhotonSyst" ]] || [[ $STEP == 'sig
 	if [[ $year == $YEAR ]] || [[ $YEAR == "all" ]]; then
 	    echo "====> Running $STEP for year $year"
 	    if [[ $STEP == "fTest" ]]; then
-		python RunSignalScripts.py --inputConfig config_test_${year}.py  --mode fTest --modeOpts "--doPlots --outdir plots --nProcsToFTest -1" ${DROPT}
+		python RunSignalScripts.py --inputConfig config_test_${year}_NoSyst.py  --mode fTest --modeOpts "--doPlots --outdir plots --nProcsToFTest -1" ${DROPT}
 	    elif [[ $STEP == "calcPhotonSyst" ]]; then
-		python RunSignalScripts.py --inputConfig config_test_${year}.py --mode calcPhotonSyst ${DROPT}
-	    elif [[ $STEP == 'signalFit' ]]; then
-		python RunSignalScripts.py --inputConfig config_test_${year}.py --mode signalFit --modeOpts="--doPlots --outdir plots" ${DROPT}
+		python RunSignalScripts.py --inputConfig config_test_${year}_NoSyst.py --mode calcPhotonSyst ${DROPT}
+	    elif [[ $STEP == 'getEffAcc' ]]; then
+        python RunSignalScripts.py --inputConfig config_test_${year}.py --mode getEffAcc --modeOpts="--year ${year} --skipCOWCorr"  ${DROPT}
+        elif [[ $STEP == 'signalFit' ]]; then
+		python RunSignalScripts.py --inputConfig config_test_${year}_NoSyst.py --mode signalFit --modeOpts="--doPlots --outdir plots" ${DROPT}
 	    fi
 	fi
     done
