@@ -104,7 +104,6 @@ def signalFromFileName(_fileName):
       p += "f05"
   return p,d
 
-
 def extFromFileName(_fileName):
   p, d = None, None
 
@@ -112,13 +111,21 @@ def extFromFileName(_fileName):
   elif "VBF"    in _fileName: p = "VBF"
   elif "Wminus" in _fileName: p = "WMINUSH2HQQ"
   elif "Wplus"  in _fileName: p = "WPLUSH2HQQ"
-  elif "WHiggs" in _fileName: p = "wh"
-  elif "ZH"     in _fileName: p = "QQ2HLL"
+  elif "WHiggs"  in _fileName: p = "-"
+  elif "ZH_HToGG"     in _fileName: p = "QQ2HLL"
+  elif "ZHiggs"     in _fileName: p = "ZH"
   elif "ttH"    in _fileName: p = "TTH"
   else:
     print " --> [ERROR]: cannot extract production mode from input file name. Please update tools.commonTools.signalFromFileName"
     exit(1)
-  if "JHUGen" in _fileName:
+  print(_fileName)
+  if "JHUGen" in _fileName and  "WHiggs0M" in _fileName : p = 'wh_ALT_0M'
+  elif "JHUGen" in _fileName and  "WHiggs0L1f" in _fileName :  p = 'WH_ALT0L1'
+  elif "JHUGen" in _fileName and  "WHiggs0PHf05" in _fileName :  p = 'WH_ALT0PH'
+  elif "JHUGen" in _fileName and  "WHiggs0L1ToGG" in _fileName :  p = 'wh_ALT_L1'
+  elif "JHUGen" in _fileName and  "WHiggs0PH" in _fileName : p = 'WH_ALT0PH'
+
+  elif "JHUGen" in _fileName and "VBFHiggs" in _fileName :
     if "0L1Zg" in _fileName:
       p += "_ALT_L1Zg"
     elif "0L1" in _fileName:
@@ -129,11 +136,25 @@ def extFromFileName(_fileName):
       p += "_ALT_0PH"
     elif "0PM" in _fileName:
       p += "_ALT_0PM"
-    else:
+
+  
+  elif "JHUGen" in _fileName and "ZHiggs" in _fileName :
+    if "0L1Zg" in _fileName:
+      p += "_ALT0L1Zg"
+    elif "0L1" in _fileName:
+      p += "_ALT0L1"
+    elif "0M" in _fileName:
+      p += "_ALT0M"
+    elif "0PH" in _fileName:
+      p += "_ALT0PH"
+      
+  if "f05ph0" in _fileName and (( "VBFHiggs"  in _fileName ) or ( "WHiggs0Mf"  in _fileName )) :
+      p += "f05"
+  elif "f05ph0" in _fileName :
+      p += "f05ph0"
+  if p == None:
       print " --> [ERROR]: cannot extract production mode from input file name. Please update tools.commonTools.signalFromFileName"
       exit(1)
-    if "f05ph0" in _fileName:
-      p += "f05"
   return p,d
 
 # Function to return mass from input file name

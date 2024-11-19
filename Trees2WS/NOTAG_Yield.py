@@ -1,3 +1,10 @@
+
+
+#import commonObjects
+import os
+
+
+
 import uproot 
 import glob
 import os
@@ -10,9 +17,11 @@ import ROOT
 import pandas as pd
 import glob
 import pickle
-from commonTools import *
-from commonObjects import *
+
 import json 
+from  commonTools import * 
+
+
 
 
 def get_weighted_entries(file_path, cat):
@@ -41,18 +50,22 @@ r = {}
 
 year = ["2016preVFP" , "2016postVFP", "2017", "2018" ]
 
+
+
 df = pd.read_csv('CardsReplacement.csv')
 
 
 for y in year:
 
       root_files = glob.glob(opt.tree_dir+'/'+y+'/*output_*.root') 
-      for root_file in root_files: 
+      for root_file in root_files:
         weighted_entries = get_weighted_entries(root_file,'NOTAG')
         proc = extFromFileName(root_file)[0]
         mass = str(massFromFileName(root_file))
         r[proc+'_'+mass+'_'+y]=float(weighted_entries)
+        
         for index, row in df[(df['proc']==proc) & (df['mass']==eval(mass)) & (df['from']==y) ].iterrows():
+          print("SONO QUI ",proc,eval(mass),y)
           r[proc+'_'+mass+'_'+row['to']]=float(weighted_entries)
         print(proc+'_'+str(massFromFileName(root_file))+'_'+y,float(weighted_entries))
 
