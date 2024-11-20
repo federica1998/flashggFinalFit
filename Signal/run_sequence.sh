@@ -46,7 +46,7 @@ fi
 
 years=("2016preVFP" "2016postVFP" "2017" "2018")
 
-if [[ $STEP == "fTest" ]] || [[ $STEP == "calcPhotonSyst" ]] || [[ $STEP == 'signalFit' ]]; then
+if [[ $STEP == "fTest" ]] || [[ $STEP == "calcPhotonSyst" ]] ||  [[ $STEP == "getEffAcc" ]] || [[ $STEP == 'signalFit' ]]; then
     for year in ${years[*]}
     do
 	if [[ $year == $YEAR ]] || [[ $YEAR == "all" ]]; then
@@ -58,7 +58,7 @@ if [[ $STEP == "fTest" ]] || [[ $STEP == "calcPhotonSyst" ]] || [[ $STEP == 'sig
 	    elif [[ $STEP == 'getEffAcc' ]]; then
         python RunSignalScripts.py --inputConfig config_test_${year}.py --mode getEffAcc --modeOpts="--year ${year} --skipCOWCorr"  ${DROPT}
         elif [[ $STEP == 'signalFit' ]]; then
-		python RunSignalScripts.py --inputConfig config_test_${year}_NoSyst.py --mode signalFit --modeOpts="--doPlots --outdir plots" ${DROPT}
+		python RunSignalScripts.py --inputConfig config_test_${year}_NoSyst.py --mode signalFit --modeOpts="--doPlots --outdir plots --doEffAccFromJson" ${DROPT}
 	    fi
 	fi
     done
