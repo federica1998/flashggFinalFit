@@ -157,7 +157,7 @@ class FinalModel:
     for mp in self.massPoints.split(","):
       mh.append(float(mp))
       if self.doEffAccFromJson:
-        jfname = "%s/outdir_%s/getEffAcc/json/effAcc_M%s_%s.json"%(swd__,self.ext,mp,self.ext)
+        jfname = "%s/outdir_%s/getEffAcc/json/effAcc_M%s_%s_skipCOWCorr.json"%(swd__,self.ext,mp,self.ext)
         if not os.path.exists(jfname):
           print " --> [ERROR] effAcc json file (%s) does not exist for mass point = %s. Run getEffAcc first."%(jfname,mp)
           sys.exit(1)
