@@ -11,7 +11,7 @@ models = {
     "cp":"-P HiggsAnalysis.CombinedLimit.HiggsJPC:twoHypothesisHiggs \
     --PO=muFloating", 
 
-    "ALT_0M":"-P HiggsAnalysis.CombinedLimit.FA3_Interference_JHU_ggHSyst_rw_MengsMuV_HeshyXsec_ggHInt_ggHphase:FA3_Interference_JHU_ggHSyst_rw_MengsMuV_HeshyXsec_ggHInt_ggHphase \
+    "ALT_0M":"-P HiggsAnalysis.CombinedLimit.FA3_Interference_JHU_rw_MengsMuV:FA3_Interference_JHU_rw_MengsMuV \
     --PO altSignal=ALT_0M",
 
     "ALT_0PH":"-P HiggsAnalysis.CombinedLimit.FA2_Interference_JHU_rw_MengsMuV:FA2_Interference_JHU_rw_MengsMuV \
