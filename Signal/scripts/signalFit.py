@@ -62,6 +62,7 @@ def get_options():
   # Minimizer options
   parser.add_option('--minimizerMethod', dest='minimizerMethod', default='TNC', help="(Scipy) Minimizer method")
   parser.add_option('--minimizerTolerance', dest='minimizerTolerance', default=1e-8, type='float', help="(Scipy) Minimizer toleranve")
+  parser.add_option('--doYield', dest='doYield', default=False, action="store_true", help="Produce Signal FittingYield txt files")
   return parser.parse_args()
 (opt,args) = get_options()
 
@@ -349,3 +350,19 @@ if opt.doPlots:
   # Plot interpolation
   plotInterpolation(fm,_outdir=outdir) 
   plotSplines(fm,_outdir=outdir,_nominalMass=MHNominal) 
+
+if opt.doYield:
+  print "\n --> Making Yield..."
+  outdir="%s/%s/signalFit/Yield"%(opt.outdir,opt.ext)
+  if not os.path.isdir(outdir): os.system("mkdir -p %s"%outdir)
+  if os.path.exists("/afs/cern.ch"): os.system("cp /afs/cern.ch/user/g/gpetrucc/php/index.php "+outdir)
+  # Plot interpolation
+  fm.Functions['final_normThisLumi'].getVal()
+  print("Creating Yield File: %s/Yield_%s_%s"%(outdir,opt.proc, opt.cat))
+  with open("%s/Yield_%s_%s"%(outdir,opt.proc, opt.cat), 'w') as file:
+    # Write header line
+    file.write("proc   cat  yield\n")
+    
+    # Format the output string and write it
+    fm.MH.setVal(125)
+    file.write("%s   %s   %f\n" % (opt.proc, opt.cat, fm.Functions['final_normThisLumi'].getVal()))
