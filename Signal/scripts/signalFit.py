@@ -334,10 +334,11 @@ outWS = ROOT.RooWorkspace("%s_%s"%(outputWSName__,sqrts__),"%s_%s"%(outputWSName
 fm.save(outWS)
 outWS.Write()
 fout.Close()
+
   
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # PLOTTING
-if opt.doPlots:
+if  opt.doPlots:
   print "\n --> Making plots..."
   outdir="%s/%s/signalFit/Plots"%(opt.outdir,opt.ext)
   if not os.path.isdir(outdir): os.system("mkdir -p %s"%outdir)
@@ -348,8 +349,10 @@ if opt.doPlots:
     plotPdfComponents(ssfRV,_outdir=outdir,_extension="RV_",_proc=procRVFit,_cat=catRVFit) 
     plotPdfComponents(ssfWV,_outdir=outdir,_extension="WV_",_proc=procWVFit,_cat=catRVFit) 
   # Plot interpolation
+
   plotInterpolation(fm,_outdir=outdir) 
   plotSplines(fm,_outdir=outdir,_nominalMass=MHNominal) 
+
 
 if opt.doYield:
   print "\n --> Making Yield..."
@@ -365,4 +368,8 @@ if opt.doYield:
     
     # Format the output string and write it
     fm.MH.setVal(125)
+   
+    fm.intLumi.setVal(lumiScaleFactor*float(lumiMap[fm.year]))
+    
+    
     file.write("%s   %s   %f\n" % (opt.proc, opt.cat, fm.Functions['final_normThisLumi'].getVal()))
