@@ -57,7 +57,7 @@ do
 	if [[ $STEP == "t2ws-mc" ]]; then
 	    python RunWSScripts.py --inputConfig config.py --inputDir  Merged/${year}  --mode trees2ws --modeOpts " --doSystematics" --year ${year} --ext ${year} ${QUEUE} ${DROPT}
     elif [[ $STEP == "t2ws-mc-ggh" ]]; then
-	    python RunWSScripts.py --inputConfig config.py --inputDir  MergeGGH  --mode trees2ws  --modeOpts " --doSystematics"   --year ${year} --ext ggH_${year} ${QUEUE} ${DROPT}
+	    python RunWSScripts.py --inputConfig config.py --inputDir  MergeGGH  --mode trees2ws  --modeOpts " --doSystematics"   --year ${year} --ext ggh_${year} ${QUEUE} ${DROPT}
     elif [[ $STEP == "t2ws-mc-vbf" ]]; then
 	    python RunWSScripts.py --inputConfig config.py --inputDir MergeVBF  --mode trees2ws  --modeOpts " --doSystematics"  --year ${year} --ext vbf_${year} ${QUEUE} ${DROPT}
 
@@ -72,10 +72,11 @@ do
         echo "it should be 160"
         echo "if not there's an error"
     elif [[ $STEP == "t2ws-data" ]]; then
-	    python RunWSScripts.py --inputConfig config.py --inputDir trees/data_${year} --mode trees2ws_data --year ${year} --ext ${year} ${QUEUE} ${DROPT}    
-	elif [[ $STEP == "hadd-mc" ]]; then
-	    echo python RunWSScripts.py --inputDir MergeVBF  --mode haddMC --year ${year} --ext vbf_${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
-	    python RunWSScripts.py --inputDir MergeGGH  --mode haddMC --year ${year} --ext ggH_${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
+    python RunWSScripts.py --inputConfig config.py --inputDir trees/data_${year} --mode trees2ws_data --year ${year} --ext ${year} ${QUEUE} ${DROPT}    
+	elif [[ $STEP == "hadd-mc-vbf" ]]; then
+	    python RunWSScripts.py --inputDir MergeVBF  --mode haddMC --year ${year} --ext vbf_${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
+    elif [[ $STEP == "hadd-mc-ggh" ]]; then
+	    python RunWSScripts.py --inputDir MergeGGH  --mode haddMC --year ${year} --ext ggh_${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
 	elif [[ $STEP == "hadd-data" ]]; then
 	    python RunWSScripts.py --inputDir trees/data_${year} --mode haddData --year ${year} --ext ${year} --flashggPath ${fggDir} ${QUEUE} ${DROPT}
 	else
