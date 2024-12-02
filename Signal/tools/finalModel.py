@@ -137,7 +137,7 @@ class FinalModel:
   def buildXSBRSplines(self):
     mh = np.linspace(120.,130.,101)
     # the alternative models have only the nominal mass. Take the trends from the SM one
-    if "ALT" in self.proc: self.proc_full = self.proc
+    self.proc_full = self.proc
     if "ALT" in self.proc: self.proc = self.proc.split("_")[0]
     # XS
     fp = self.xsbrMap[self.proc]['factor'] if 'factor' in self.xsbrMap[self.proc] else 1.
@@ -162,12 +162,24 @@ class FinalModel:
           print " --> [ERROR] effAcc json file (%s) does not exist for mass point = %s. Run getEffAcc first."%(jfname,mp)
           sys.exit(1)
         with open(jfname,'r') as jf: ea_data = json.load(jf)
+        print(self.proc,self.cat)
+        #if ('ALT' in self.proc_full) and (mp != '125'): continue
+        print("%s/outdir_%s/getEffAcc/json/effAcc_M%s_%s_skipCOWCorr.json"%(swd__,self.ext,mp,self.ext))
+ 
+        
         ea.append(float(ea_data['%s__%s'%(self.proc_full,self.cat)]))
+        print('json ea= ')
+        print(ea)
       else:
         sumw = self.datasets[mp].sumEntries()
         self.MH.setVal(float(mp))
+        
         xs,br = self.Splines['xs'].getVal(), self.Splines['br'].getVal()
+        print(sumw)
         ea.append(sumw/(lumiScaleFactor*xs*br)) 
+        print(lumiScaleFactor,xs,br,lumiScaleFactor*xs*br)
+        print('ea= ')
+        print(ea)
     # If single mass point then add MHLow and MHHigh dummy points for constant ea
     if len(ea) == 1: ea, mh = [ea[0],ea[0],ea[0]], [float(self.MHLow),mh[0],float(self.MHHigh)]
     # Convert to numpy arrays and make spline
