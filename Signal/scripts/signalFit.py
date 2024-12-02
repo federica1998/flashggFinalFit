@@ -364,12 +364,13 @@ if opt.doYield:
   print("Creating Yield File: %s/Yield_%s_%s"%(outdir,opt.proc, opt.cat))
   with open("%s/Yield_%s_%s"%(outdir,opt.proc, opt.cat), 'w') as file:
     # Write header line
-    file.write("proc   cat  yield\n")
+    file.write("proc   cat  yield   entries\n")
     
     # Format the output string and write it
     fm.MH.setVal(125)
    
     fm.intLumi.setVal(lumiScaleFactor*float(lumiMap[fm.year]))
+  
     
     
-    file.write("%s   %s   %f\n" % (opt.proc, opt.cat, fm.Functions['final_normThisLumi'].getVal()))
+    file.write("%s   %s   %f   %d \n" % (opt.proc, opt.cat, fm.Functions['final_normThisLumi'].getVal(), fm.datasets['125'].numEntries()))

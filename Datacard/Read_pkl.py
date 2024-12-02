@@ -19,7 +19,7 @@ def get_options():
   parser = OptionParser()
   # Input details
   parser.add_option('--cat', dest='cat', default='all', help="Category ")
-  parser.add_option('--dir', dest='dir', default='yields_CORR_EFF_ALT_0M', help="Directory from wich read pkl")
+  parser.add_option('--dir', dest='dir', default='yields_2024-09-01_ALT_0M', help="Directory from wich read pkl")
   parser.add_option('--doFile', dest='doFile', default='Yes', help="Do you want to have the output file? Yes or No")
   return parser.parse_args()
 (opt,args) = get_options()
@@ -45,6 +45,7 @@ for m in models:
         data = []
         with open(pkl_file) as f:  
             data.append(pickle.load(f))
+            
         dataFrame = pd.DataFrame()
         
 
@@ -63,6 +64,8 @@ for m in models:
 
         
             dataFrame = pd.concat([dataFrame, df.T], ignore_index=True)
+        
+     
         
         dataFrame["lumi"] = dataFrame["year"].map(lumiMap)
         dataFrame["nominal_yield"] = pd.to_numeric(dataFrame["nominal_yield"], errors='coerce')

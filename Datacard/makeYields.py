@@ -206,9 +206,6 @@ if opt.doSystematics:
 	if not opt.skipCOWCorr: data['%s_yield_COWCorr'%s['name']] = '-'
 
 
-#experimentalFactoryType_JetHEM={'JER': 'a_h', 'MuonIDWeight': 'a_w', 'JetHEM': 'a_h', 'JEC': 'a_h', 'TriggerWeight': 'a_w', 'MvaShift': 'a_h', 'LooseMvaSF': 'a_w', 'JetBTagCutWeight': 'a_w', 'SigmaEOverEShift': 'a_h', 'MuonIsoWeight': 'a_w', 'PreselSF': 'a_w', 'PUJIDShift': 'a_h', 'ElectronIDWeight': 'a_w', 'prefireWeight': 'a_w', 'ElectronRecoWeight': 'a_w', 'electronVetoSF': 'a_w', 'JetBTagReshapeWeight': 'a_w'}
-#experimentalFactoryType_Not_JetHEM= {'JER': 'a_h', 'MuonIDWeight': 'a_w',  'JEC': 'a_h', 'TriggerWeight': 'a_w', 'MvaShift': 'a_h', 'LooseMvaSF': 'a_w', 'JetBTagCutWeight': 'a_w', 'SigmaEOverEShift': 'a_h', 'MuonIsoWeight': 'a_w', 'PreselSF': 'a_w', 'PUJIDShift': 'a_h', 'ElectronIDWeight': 'a_w', 'prefireWeight': 'a_w', 'ElectronRecoWeight': 'a_w', 'electronVetoSF': 'a_w', 'JetBTagReshapeWeight': 'a_w'}
-
 # Loop over signal rows in dataFrame: extract yields (nominal & systematic variations)
 totalSignalRows = float(data[data['type']=='sig'].shape[0])
 for ir,r in data[data['type']=='sig'].iterrows():
@@ -226,6 +223,7 @@ for ir,r in data[data['type']=='sig'].iterrows():
   y, y_COWCorr = 0, 0
   sumw2 = 0
   for i in range(0,rdata_nominal.numEntries()):
+    
     p = rdata_nominal.get(i)
     w = rdata_nominal.weight()
     y += w
@@ -248,11 +246,6 @@ for ir,r in data[data['type']=='sig'].iterrows():
     # For experimental systematics: skip NOTAG events
     if "NOTAG" not in r['cat']:
       # Skip centralObjectWeight correction as concerns events in acceptance
-      #if ((r['year']=="2018") and ((r['proc']!='qqH_2018_hgg') and (r['proc']!='qqH_ALT_0PH_2018_hgg') and (r['proc']!='wh_ALT_0PHf05_2018_hgg')  and (r['proc']!='qqH_ALT_L1f05_2018_hgg') and (r['proc']!='wh_ALT_0PH_2018_hgg') and (r['proc']!='qqH_ALT_0PHf05_2018_hgg') and (r['proc']!='zh_ALT_0PHf05_2018_hgg') and ((r['proc']!='zh_ALT_L1f05_2018_hgg') )  and ((r['proc']!='qqH_ALT_L1_2018_hgg') )  and (r['proc']!='ggH_2018_hgg') and (r['proc']!='qqH_ALT_L1_2018') and (r['proc']!='qqH_ALT_0M_2018_hgg')) ):
-       #  print("----------------------")
-       #  experimentalFactoryType = experimentalFactoryType_JetHEM
-      #else:experimentalFactoryType = experimentalFactoryType_Not_JetHEM
-      #print(r['year'],experimentalFactoryType)
       experimentalSystYields = calcSystYields(r['nominalDataName'],contents,inputWS,experimentalFactoryType,skipCOWCorr=True,proc=r['proc'],year=r['year'],ignoreWarnings=opt.ignore_warnings)
       for s,f in experimentalFactoryType.iteritems():
 	if f in ['a_w','a_h']: 
