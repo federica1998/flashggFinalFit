@@ -146,8 +146,12 @@ tot = 0
 for cat in cats:
 #for cat in cats:
   print " --> Extracting events from category: %s"%cat
-  if inputTreeDir == '': treeName = "%s_%s_%s_%s"%(opt.productionMode,opt.inputMass,sqrts__,cat)
-  else: treeName = "%s/%s_%s_%s_%s"%(inputTreeDir,opt.productionMode,opt.inputMass,sqrts__,cat)
+  if "ggh" in opt.productionMode : 
+     if inputTreeDir == '': treeName = "%s_%s_%s"%(opt.productionMode,sqrts__,cat)
+     else: treeName = "%s/%s_%s_%s"%(inputTreeDir,opt.productionMode,sqrts__,cat)
+  else:
+      if inputTreeDir == '': treeName = "%s_%s_%s_%s"%(opt.productionMode,opt.inputMass,sqrts__,cat)
+      else: treeName = "%s/%s_%s_%s_%s"%(inputTreeDir,opt.productionMode,opt.inputMass,sqrts__,cat)
   print "    * tree: %s"%treeName
   # Extract tree from uproot
   t = f[treeName]

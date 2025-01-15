@@ -73,6 +73,10 @@ def signalFromFileName(_fileName):
     if "ZToLL" in _fileName: d = "_ZToLL"
     elif "ZToNuNu" in _fileName: d = "_ZToNuNu"
     else: d = "_ZToQQ"
+  
+  elif "GluGluHToGGPlusTwoJets_MM"    in _fileName: p = "ggh_MM"
+  elif "GluGluHToGGPlusTwoJets_SM"    in _fileName: p = "ggh_SM"
+  elif "GluGluHToGGPlusTwoJets_CPodd"    in _fileName: p = "ggh_CPodd"
   elif "GluGlu" in _fileName: p = "ggh"
   elif "VBF" in _fileName: p = "vbf"
   elif "WH" in _fileName: p = "wh"
@@ -107,7 +111,10 @@ def signalFromFileName(_fileName):
 def extFromFileName(_fileName):
   p, d = None, None
 
-  if "GluGlu"   in _fileName: p = "GG2H"
+  if "GluGluHToGGPlusTwoJets_MM"    in _fileName: p = "GG2H_0Mf05"
+  elif "GluGluHToGGPlusTwoJets_SM"    in _fileName: p = "GG2H"
+  elif "GluGluHToGGPlusTwoJets_CPodd"    in _fileName: p = "GG2H_0M"
+  elif "GluGlu"   in _fileName: p = "GG2H"
   elif "VBF"    in _fileName: p = "VBF"
   elif "Wminus" in _fileName: p = "WMINUSH2HQQ"
   elif "Wplus"  in _fileName: p = "WPLUSH2HQQ"
@@ -171,6 +178,8 @@ def massFromFileName(_fileName):
 # Function for converting STXS process to production mode in dataset name
 procToDataMap = od()
 procToDataMap['GG2H'] = 'ggh'
+procToDataMap['GG2H_0Mf05'] = 'ggh_ALT_0Mf05'
+procToDataMap['GG2H_0M'] = 'ggh_ALT_0M'
 procToDataMap['VBF'] = 'vbf'
 procToDataMap['VBF_ALT_0PM'] = 'vbf_ALT_0PM'
 procToDataMap['VBF_ALT_0PH'] = 'vbf_ALT_0PH'
