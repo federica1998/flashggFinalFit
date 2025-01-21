@@ -161,9 +161,11 @@ if opt.prune:
   #years = ['2017','2016postVFP','2016preVFP']
   #data = data[~data['year'].isin(years)]
 if opt.proc != None:
-  processi = opt.proc.split(',')
-  print(processi)
-  mask =~data['procOriginal'].apply(lambda x: x in processi)
+  process = opt.proc.split(',')
+  for p in process : 
+    if p not in data['procOriginal'].unique(): print('WARNING the selected process is not in the list!!!!!!')
+  print(data['procOriginal'].unique())
+  mask =~data['procOriginal'].apply(lambda x: x in process)
   data.loc[mask,'prune'] = 1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SAVE DATAFRAME
