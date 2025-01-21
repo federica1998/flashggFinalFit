@@ -1,4 +1,4 @@
-ext='2024-12-01' 
+ext='2025-01-01' 
 
 
 STEP=0
@@ -43,10 +43,10 @@ if [[ $STEP == "yields" ]]; then
     echo $smprocs_csv
 
     
-#    python RunYields.py --cats "auto" --inputWSDirMap 2016preVFP=cards/signal_2016preVFP,2016postVFP=cards/signal_2016postVFP,2017=cards/signal_2017,2018=cards/signal_2018 --procs $smprocs_csv --mergeYears --doSystematics --skipZeroes --ext ${ext}_xsec  ${DROPT}
+    python RunYields.py --cats "auto" --inputWSDirMap 2016preVFP=cards/signal_2016preVFP,2016postVFP=cards/signal_2016postVFP,2017=cards/signal_2017,2018=cards/signal_2018 --procs $smprocs_csv --mergeYears --doSystematics --skipZeroes --ext ${ext}_xsec  ${DROPT}
     # for the single fai fits: include one ALT sample at a time
-#    for altproc in "ALT_L1" "ALT_L1Zg" "ALT_0PH" "ALT_0M"  
-    for altproc in "ALT_0M"  
+    for altproc in "ALT_0M" "ALT_L1" "ALT_L1Zg" "ALT_0PH"
+   # for altproc in "ALT_0M"  
 
     
     # to get the interference correctly need the SM (fa1=0), the pure BSM (fai=1) and the mixed one (fai=0.5)
@@ -55,9 +55,15 @@ if [[ $STEP == "yields" ]]; then
 	# for bookkeeping mistake, for VBF the files are called ALT_xxx for VBF and ALTxx for VH,TTH
 	altproc_nonvbf=`echo ${altproc} | sed 's|_||g'`
        
-
+       
+       
+        if [[ $altproc == "ALT_0M" ]]; then 
         vbfsamples="VBF,VBF_${altproc}"
-        
+        else
+        vbfsamples="VBF,VBF_${altproc},VBF_${altproc}f05"
+        fi
+
+
         if [[ $altproc == "ALT_0PH" ]]; then 
 	    zhsamples="QQ2HLL,ZH_${altproc_nonvbf},ZH_${altproc_nonvbf}f05ph0"
         elif [[ $altproc == "ALT_0M" ]]; then 
@@ -78,18 +84,14 @@ if [[ $STEP == "yields" ]]; then
         else
         whsamples="WMINUSH2HQQ,WPLUSH2HQQ"
         fi
-   
-	
-    
 
-
-     python RunYields.py --cats "auto" --inputWSDirMap 2016preVFP=cards/signal_2016preVFP,2016postVFP=cards/signal_2016postVFP,2017=cards/signal_2017,2018=cards/signal_2018 --procs "GG2H,TTH,$vbfsamples,$whsamples,$zhsamples" --mergeYears --doSystematics --skipZeroes --ext ${ext}_${altproc} ${DROPT}
+   python RunYields.py --cats "auto" --inputWSDirMap 2016preVFP=cards/signal_2016preVFP,2016postVFP=cards/signal_2016postVFP,2017=cards/signal_2017,2018=cards/signal_2018 --procs "GG2H,TTH,$vbfsamples,$whsamples,$zhsamples" --mergeYears --doSystematics --skipZeroes --ext ${ext}_${altproc} ${DROPT}
  done
 
    #python RunYields.py --cats "auto" --procs "auto"  --inputWSDirMap 2016preVFP=cards/signal_2016preVFP,2016postVFP=cards/signal_2016postVFP,2017=cards/signal_2017,2018=cards/signal_2018  --mergeYears --doSystematics  --skipZeroes --ext ${ext}_all --batch condor --queue longlunch ${DROPT}
 elif [[ $STEP == "datacards" ]]; then
 
-   for fit in "ALT_0M" 
+    for fit in "xsec" "ALT_0M" "ALT_L1" "ALT_L1Zg" "ALT_0PH"
    do
 	echo "making datacards for all years together for type of fit: $fit"
    python makeDatacard.py --years 2016preVFP,2016postVFP,2017,2018 --ext ${ext}_${fit} --prune --doSystematics  --output "Datacard_${fit}" --pruneCat RECO_VBFLIKEGGH_Tag1,RECO_VBFLIKEGGH_Tag0 

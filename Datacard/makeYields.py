@@ -183,15 +183,16 @@ if opt.doSystematics:
   theoryFactoryType = {}
   # No experimental systematics for NOTAG
   if opt.cat != "NOTAG":
-    for s in experimental_systematics: 
+    for s in experimental_systematics:
+      if s['name'] == 'statistical': continue
       if s['type'] == 'factory': 
 	# Fix for HEM as only in 2018 workspaces
-	if s['name'] == 'JetHEM': experimentalFactoryType[s['name']] = "a_h"
-	else: experimentalFactoryType[s['name']] = factoryType(data,s)
-	if experimentalFactoryType[s['name']] in ["a_w","a_h"]:
-	  data['%s_up_yield'%s['name']] = '-'
-	  data['%s_down_yield'%s['name']] = '-'
-	else: data['%s_yield'%s['name']] = '-'
+        if s['name'] == 'JetHEM': experimentalFactoryType[s['name']] = "a_h"
+        else: experimentalFactoryType[s['name']] = factoryType(data,s)
+        if experimentalFactoryType[s['name']] in ["a_w","a_h"]:
+          data['%s_up_yield'%s['name']] = '-'
+          data['%s_down_yield'%s['name']] = '-'
+        else: data['%s_yield'%s['name']] = '-'
   for s in theory_systematics: 
     if s['type'] == 'factory': 
       theoryFactoryType[s['name']] = factoryType(data,s)
@@ -223,7 +224,6 @@ for ir,r in data[data['type']=='sig'].iterrows():
   y, y_COWCorr = 0, 0
   sumw2 = 0
   for i in range(0,rdata_nominal.numEntries()):
-    
     p = rdata_nominal.get(i)
     w = rdata_nominal.weight()
     y += w
@@ -236,6 +236,10 @@ for ir,r in data[data['type']=='sig'].iterrows():
       if f_COWCorr == 0: continue
       else: y_COWCorr += w*(f_NNLOPS/f_COWCorr)
   data.at[ir,'nominal_yield'] = y
+  print(rdata_nominal.numEntries())
+  data.at[ir,'statistical_yield'] =  y+y*1/(rdata_nominal.numEntries())**0.5
+
+
   data.at[ir,'sumw2'] = sumw2
   if not opt.skipCOWCorr: data.at[ir,'nominal_yield_COWCorr'] = y_COWCorr
   print "\t\t ==> nominal_yield = %f " % (y*_rate/1000.)
