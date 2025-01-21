@@ -31,6 +31,8 @@ def get_options():
   # For output
   parser.add_option('--saveDataFrame', dest='saveDataFrame', default=False, action="store_true", help='Save final dataframe as pkl file') 
   parser.add_option('--output', dest='output', default='Datacard', help='Datacard name') 
+  #My change to specified the process inside 
+  parser.add_option('--proc', dest='proc', default=None, help='proc that i want to add inside the Datacard ') 
   return parser.parse_args()
 (opt,args) = get_options()
 
@@ -158,8 +160,11 @@ if opt.prune:
   data.loc[mask,'prune'] = 1
   #years = ['2017','2016postVFP','2016preVFP']
   #data = data[~data['year'].isin(years)]
-  
-    
+if opt.proc != None:
+  processi = opt.proc.split(',')
+  print(processi)
+  mask =~data['procOriginal'].apply(lambda x: x in processi)
+  data.loc[mask,'prune'] = 1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SAVE DATAFRAME
 if opt.saveDataFrame:
