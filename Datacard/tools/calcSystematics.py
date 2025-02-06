@@ -60,7 +60,7 @@ def factoryType(d,s):
 
   #Fix for pdfWeight (as Nweights > 10)
   #if('pdfWeight' in s['name']): return "s_w"
-  if('pdfWeight' in s['name'])|('alphaSWeight' in s['name'])|('scaleWeight' in s['name']): return "s_w"
+  if('statistical' in s['name'])|('pdfWeight' in s['name'])|('alphaSWeight' in s['name'])|('scaleWeight' in s['name']): return "s_w"
 
   #Fix for rare cases in which there is no signal for that category at all (and skipZeroes has been used)
   if(d[d['type']=='sig'].size==0): return "-"

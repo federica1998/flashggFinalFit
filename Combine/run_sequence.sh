@@ -36,7 +36,6 @@ fi
 
 fits=("xsec" "ALT_L1" "ALT_L1Zg" "ALT_0PH" "ALT_0M")
 
-fits=(  "ALT_0M"  )
 
 if [[ $STEP == "t2w" ]]; then
     for fit in ${fits[*]}
