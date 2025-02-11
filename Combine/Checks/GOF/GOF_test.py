@@ -26,8 +26,9 @@ r.gStyle.SetOptStat(2211)
 def get_options():
   parser = OptionParser()
   parser.add_option('--step', dest='step', default='Fit', help="Toy or Fit")
-  parser.add_option('--nToys', dest='nToys', default='200', help="Create a number of Toys")
+  parser.add_option('--nToys', dest='nToys', default='300', help="Create a number of Toys")
   parser.add_option('--ext', dest='ext', default='GOF', help="Estensione che vuoi per i jobs")
+  parser.add_option('--model', dest='model', default='ALT_0M', help="Model used")
   parser.add_option('--poi', dest='poi', default='CMS_zz4l_fai1', help="parameter of interest")
   parser.add_option('--FixValue', dest='FixValue', default='0.000958', help="Fix Value of the parameter of interest")
   parser.add_option('--printOnly', dest='printOnly', default=False, action="store_true", help="Dry run: print submission files only")
@@ -39,23 +40,21 @@ def leave():
   print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RUNNING TOYS (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   sys.exit(1)
 
-Datacard = '/eos/cms/store/group/phys_higgs/cmshgg/fderiggi/Datacards_DecemberProduction/Datacard_ALT_0M_TTH.root'
-
-Datacard = '/afs/cern.ch/user/f/fderiggi/AC/CMSSW_10_2_13/src/flashggFinalFit/Combine/Checks/GOF/Datacard_ALT_0M_OneSyst.root'
 
 
-data_jobDir = "NominalData_%s"%(opt.ext)
+
+
+Datacard = '/afs/cern.ch/user/f/fderiggi/AC/CMSSW_10_2_13/src/flashggFinalFit/Combine/Checks/GOF/Datacard_%s_OneSyst.root'%opt.ext
+
+
+data_jobDir = "NominalData_%s_%s"%(opt.ext,opt.model)
 data_outputDir = "/eos/home-f/fderiggi/AC/GOF/Output"+data_jobDir
 
-toy_jobDir = "NominalToys_%s"%(opt.ext)
+toy_jobDir = "NominalToys_%s_%s"%(opt.ext,opt.model)
 toy_outputDir = "/eos/home-f/fderiggi/AC/GOF/Output"+toy_jobDir
 
-collect_jobDir = "NominalCollect_%s"%(opt.ext)
+collect_jobDir = "NominalCollect_%s_%s"%(opt.ext,opt.model)
 collect_outputDir = "/eos/home-f/fderiggi/AC/GOF/Output"+collect_jobDir
-
-
-fit_jobDir = "NominalFits_%s_%s"%(opt.ext, opt.poi) 
-fit_outputDir = "/eos/home-f/fderiggi/AC/GOF/Output_NominalFits_%s_%s"%(opt.ext, opt.poi)
 
 
 
@@ -71,7 +70,7 @@ if opt.step == "Data":
   _f = open("%s/Data.txt"%(data_jobDir),"w")
   #for n in range(eval(opt.nToys)):
   _cmd = "combine -m 125.38 -d %s  --X-rtd FITTER_NEW_CROSSING_ALGO  --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND --cminFallbackAlgo Minuit2,0:1. --cminDefaultMinimizerStrategy 0 --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants --X-rtd MINIMIZER_multiMin_maskConstraints --X-rtd MINIMIZER_multiMin_maskChannels=2 -M GoodnessOfFit --algo=saturated  --setParameterRanges muV=0.0,4.0:muf=0.0,10.0:CMS_zz4l_fai1=0,0.001   -n DataGOF --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1. ;mv higgsCombine*DataGOF* %s/DataGOF_data.root "%(Datacard,data_outputDir)
-  print(_cmd)
+ # print(_cmd)
   _f.write("%s\n"%_cmd)
   _f.close()
   writeSubFiles('Output_'+opt.ext+'_'+opt.step+'_Jobs',"%s/Data.txt"%(data_jobDir), batch = 'condor')
@@ -87,7 +86,7 @@ if opt.step == "Toy":
 
   _f = open("%s/Toy.txt"%(toy_jobDir),"w")
   for n in range(eval(opt.nToys)):
-    _cmd = "combine -m 125.38 -s %s -d %s -t 1 --X-rtd FITTER_NEW_CROSSING_ALGO  --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND --cminFallbackAlgo Minuit2,0:1. --cminDefaultMinimizerStrategy 0 --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants --X-rtd MINIMIZER_multiMin_maskConstraints --X-rtd MINIMIZER_multiMin_maskChannels=2 -M GoodnessOfFit -n ToyGOF --algo=saturated   --setParameterRanges muV=0.0,4.0:muf=0.0,10.0:CMS_zz4l_fai1=0,0.001   --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1. ;mv higgsCombine*ToyGOF*mH125.38.%s.root %s/ToysGOF_toys_%s.root"%(n,Datacard,n,toy_outputDir,n)
+    _cmd = "combine -m 125.38 -s %s -d %s -t 1 --X-rtd FITTER_NEW_CROSSING_ALGO  --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND --cminFallbackAlgo Minuit2,0:1. --cminDefaultMinimizerStrategy 0 --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants --X-rtd MINIMIZER_multiMin_maskConstraints --X-rtd MINIMIZER_multiMin_maskChannels=2 -M GoodnessOfFit -n ToyGOF_v2_ --algo=saturated   --setParameterRanges muV=0.0,4.0:muf=0.0,10.0:CMS_zz4l_fai1=0,0.001   --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1. ;mv higgsCombine*ToyGOF_v2_*mH125.38.%s.root %s/ToysGOF_v2_toys_%s.root"%(n,Datacard,n,toy_outputDir,n)
     #print(_cmd)
     _f.write("%s\n"%_cmd)
   _f.close()
@@ -108,7 +107,7 @@ if opt.step == "Collect":
   _f = open("%s/%s"%(toy_jobDir,txt_file),"w")
 
   
-  _cmd = "hadd -f  %s/ToysGOF_toys.root %s/ToysGOF_toys_*.root "%(collect_outputDir,toy_outputDir)
+  _cmd = "hadd -f  %s/ToysGOF_toys.root %s/ToysGOF*toys_*.root "%(collect_outputDir,toy_outputDir)
   _f.write("%s\n"%_cmd)
   _f.close()
   writeSubFiles('Output_'+opt.ext+'_'+opt.step+'_Jobs',"%s/%s"%(toy_jobDir,txt_file), batch = 'condor')
@@ -124,5 +123,13 @@ if opt.step == "Json":
   print(_cmd)
   _f.write("%s\n"%_cmd)
   _f.close()
-  writeSubFiles('Output_'+opt.ext+'_'+opt.step+'_Jobs',"%s/%s"%(toy_jobDir,txt_file), batch = 'condor')
+  #writeSubFiles('Output_'+opt.ext+'_'+opt.step+'_Jobs',"%s/%s"%(toy_jobDir,txt_file), batch = 'condor')
 
+if opt.step == "Plot":
+  txt_file = "Plot.txt"
+  _f = open("%s/%s"%(toy_jobDir,txt_file),"w")
+ 
+  _cmd = "plotGof.py gof.json --statistic saturated --mass 125.379997253 -o gof_plot --title-right=\"fa3\" "
+  run(_cmd)
+
+ # writeSubFiles('Output_'+opt.ext+'_'+opt.step+'_Jobs',"%s/%s"%(toy_jobDir,txt_file), batch = 'condor')
