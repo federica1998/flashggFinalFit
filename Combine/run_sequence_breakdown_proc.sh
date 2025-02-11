@@ -34,12 +34,8 @@ if [[ $DR ]]; then
     DROPT=" --dryRun "
 fi
 
-#fits=("ALT_L1" "ALT_L1Zg" "ALT_0PH" )
+fits=("ALT_L1" "ALT_L1Zg" "ALT_0PH" )
 ext2=("GGH" "TTH" "VHHAD" "VBF" "VHMET" "VHLEP" )
-ext2=( "TTH" "VHMET"  "NoSyst")
-fits=("ALT_0M" )
-
-
 
 
 
@@ -110,7 +106,7 @@ elif [[ $STEP == "plot" ]]; then
         for fit in ${fits[*]}
         do
            string="runFits${fit}_TTH_${fit}/profile1D_syst_${fit}_TTH_CMS_zz4l_fai1.root:TTH:2 runFits${fit}_VBF_${fit}/profile1D_syst_${fit}_VBF_CMS_zz4l_fai1.root:VBF:3 runFits${fit}_VHHAD_${fit}/profile1D_syst_${fit}_VHHAD_CMS_zz4l_fai1.root:VHHAD:4  runFits${fit}_VHMET_${fit}/profile1D_syst_${fit}_VHMET_CMS_zz4l_fai1.root:VH-MET:9 runFits${fit}_VHLEP_${fit}/profile1D_syst_${fit}_VHLEP_CMS_zz4l_fai1.root:VH-LEP:46"
-           plot1DScan.py runFits${fit}_GGH_${fit}/profile1D_syst_${fit}_GGH_CMS_zz4l_fai1.root   --y-cut 4 --y-max 4 -o  plots/Breakdown_${fit} --POI CMS_zz4l_fai1 --main-label GGH --translate ../Plots/pois_fa3.json --others $string
+           python plot1DScanBug.py runFits${fit}_GGH_${fit}/profile1D_syst_${fit}_GGH_CMS_zz4l_fai1.root   --y-cut 4 --y-max 4 -o  plots_breakdown/Breakdown_${fit} --POI CMS_zz4l_fai1 --main-label GGH --translate ../Plots/pois_fa3.json --others $string
         
 #           string="runFits${fit}_NoSyst_${fit}/profile1D_syst_${fit}_NoSyst_CMS_zz4l_fai1.root:NoSyst:2 "
  #          plot1DScan.py runFits${fit}_${fit}/profile1D_syst_${fit}_CMS_zz4l_fai1.root   --y-cut 15 --y-max 15 -o  plots/Breakdown_Syst_${fit} --POI CMS_zz4l_fai1 --main-label Syst --translate ../Plots/pois_fa3.json --others $string

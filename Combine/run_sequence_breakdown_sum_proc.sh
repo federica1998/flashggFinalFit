@@ -36,8 +36,8 @@ fi
 
 fits=("ALT_0M")
 ext2=("GGH" "G_T" "G_T_VH" "G_T_VH_VBF" "G_T_VH_VBF_MET" "NoSyst" )
-ext2=("NoSyst" )
-ext2=("G_T" "G_T_VH_VBF_MET" "NoSyst"   )
+
+
 
 
 if [[ $STEP == "txt" ]];then
@@ -51,12 +51,14 @@ if [[ $STEP == "txt" ]];then
     combineCards.py Datacard_${fit}_G_T_VH.txt Datacard_ALT_0M_VBF.txt  > Datacard_${fit}_G_T_VH_VBF.txt
 
     combineCards.py Datacard_${fit}_G_T_VH_VBF.txt Datacard_ALT_0M_VHMET.txt  > Datacard_${fit}_G_T_VH_VBF_MET.txt
+    
+    combineCards.py Datacard_${fit}.txt -s  > Datacard_${fit}_NoSyst.txt
 
    done
 elif [[ $STEP == "t2w" ]]; then
   for fit in ${fits[*]}
-    do 
-        for ext in  "G_T" "G_T_VH" "G_T_VH_VBF" "G_T_VH_VBF_MET" 
+        do
+        for ext in  "G_T" "G_T_VH" "G_T_VH_VBF" "G_T_VH_VBF_MET"  "NoSyst"
             do 
                 echo python RunText2Workspace.py --ext ${fit}_${ext} --mode ${fit}
                 python RunText2Workspace.py --ext ${fit}_${ext} --mode ${fit}
@@ -97,9 +99,8 @@ elif [[ $STEP == "plot" ]]; then
     do
         for fit in ${fits[*]}
         do
-           string="runFits${fit}_G_T_${fit}/profile1D_syst_${fit}_G_T_CMS_zz4l_fai1.root:TTH:2 runFits${fit}_G_T_VH_VBF_${fit}/profile1D_syst_${fit}_G_T_VH_VBF_CMS_zz4l_fai1.root:VBF:3 runFits${fit}_G_T_VH_${fit}/profile1D_syst_${fit}_G_T_VH_CMS_zz4l_fai1.root:VHHAD:4  runFits${fit}_G_T_VH_VBF_MET_${fit}/profile1D_syst_${fit}_G_T_VH_VBF_MET_CMS_zz4l_fai1.root:VH-MET:9 runFits${fit}_NoSyst_${fit}/profile1D_syst_${fit}_NoSyst_CMS_zz4l_fai1.root:VH-LEP:46"
-
-           plot1DScan.py runFits${fit}_GGH_${fit}/profile1D_syst_${fit}_GGH_CMS_zz4l_fai1.root   --y-cut 7 --y-max 7 -o  plots/Breakdown_sum_${fit} --POI CMS_zz4l_fai1 --main-label GGH --translate ../Plots/pois_fa3.json --others $string
+           string="runFits${fit}_G_T_${fit}/profile1D_syst_${fit}_G_T_CMS_zz4l_fai1.root:TTH:2 runFits${fit}_G_T_VH_VBF_${fit}/profile1D_syst_${fit}_G_T_VH_VBF_CMS_zz4l_fai1.root:VBF:3 runFits${fit}_G_T_VH_${fit}/profile1D_syst_${fit}_G_T_VH_CMS_zz4l_fai1.root:VHHAD:4  runFits${fit}_G_T_VH_VBF_MET_${fit}/profile1D_syst_${fit}_G_T_VH_VBF_MET_CMS_zz4l_fai1.root:VH-MET:9 runFits${fit}_${fit}/profile1D_syst_${fit}_CMS_zz4l_fai1.root:VH-LEP:46"
+           python plot1DScanBug.py runFits${fit}_GGH_${fit}/profile1D_syst_${fit}_GGH_CMS_zz4l_fai1.root   --y-cut 7 --y-max 7 -o  plots_breakdown/Breakdown_sum_${fit} --POI CMS_zz4l_fai1 --main-label GGH --translate ../Plots/pois_fa3.json --others $string
         done
     done
 else
