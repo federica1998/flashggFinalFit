@@ -56,13 +56,14 @@ Background/cards*
 Background/bin*
 Background/lib*
 Background/plot*
-
-
-Combine/runFits*
+fderiggi*
+.__*
+Combine/runFit*
 Combine/runImpact*
 Combine/t2w_jobs*
 Combine/Models*
 Combine/plot*
+Combine/validation*
 Combine/Checks/Bias_nominal/*/
 Combine/Checks/Bias_nominal
 Combine/Checks/GOF/*.root
