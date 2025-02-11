@@ -82,10 +82,10 @@ def writeSubFiles(ext,file, batch = 'condor'):
   
   # print("mkdir -p %s/outdir_%s/jobs"%(twd__,_opts.ext))
   # Make directory to store sub files
-  os.system("mkdir -p  %s/outdir_OutputBias_Jobs/outdir_%s"%(twd__,ext))
-  os.system("mkdir -p %s/outdir_OutputBias_Jobs/outdir_%s/jobs"%(twd__,ext))
+  os.system("mkdir -p  %s/outdir_OutputWilk_Jobs/outdir_%s"%(twd__,ext))
+  os.system("mkdir -p %s/outdir_OutputWilk_Jobs/outdir_%s/jobs"%(twd__,ext))
  
-  _jobdir = "%s/outdir_OutputBias_Jobs/outdir_%s/jobs"%(twd__,ext)
+  _jobdir = "%s/outdir_OutputWilk_Jobs/outdir_%s/jobs"%(twd__,ext)
   # Remove current job files
 #  if len(glob.glob("%s/*"%_jobdir)): os.system("rm %s/*"%_jobdir)
  
