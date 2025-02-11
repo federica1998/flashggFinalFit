@@ -108,7 +108,7 @@ if opt.step == "Collect":
   _f = open("%s/%s"%(toy_jobDir,txt_file),"w")
 
   
-  _cmd = "hadd -f  %s/DataGOF_toys.root %s/DataGOF_toys_*.root "%(collect_outputDir,toy_outputDir)
+  _cmd = "hadd -f  %s/ToysGOF_toys.root %s/ToysGOF_toys_*.root "%(collect_outputDir,toy_outputDir)
   _f.write("%s\n"%_cmd)
   _f.close()
   writeSubFiles('Output_'+opt.ext+'_'+opt.step+'_Jobs',"%s/%s"%(toy_jobDir,txt_file), batch = 'condor')
@@ -120,7 +120,7 @@ if opt.step == "Json":
   txt_file = "Json.txt"
   _f = open("%s/%s"%(toy_jobDir,txt_file),"w")
  
-  _cmd = "combineTool.py -M CollectGoodnessOfFit --input  %s/DataGOF_toys.root %s/DataGOF_data.root -m 125.0 "%(collect_outputDir,data_outputDir)
+  _cmd = "combineTool.py -M CollectGoodnessOfFit --input  %s/ToysGOF_toys.root %s/DataGOF_data.root -m 125.0 "%(collect_outputDir,data_outputDir)
   print(_cmd)
   _f.write("%s\n"%_cmd)
   _f.close()
