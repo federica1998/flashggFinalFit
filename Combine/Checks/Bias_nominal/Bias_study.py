@@ -24,10 +24,10 @@ r.gStyle.SetOptStat(2211)
 def get_options():
   parser = OptionParser()
   parser.add_option('--step', dest='step', default='Fit', help="Toy or Fit")
-  parser.add_option('--nToys', dest='nToys', default='100', help="Create a number of Toys")
-  parser.add_option('--ext', dest='ext', default='24_06_04', help="Estensione che vuoi per i jobs")
-  parser.add_option('--poi', dest='poi', default='muf', help="parameter of interest")
-  parser.add_option('--expectSignal', dest='expectSignal', default=0, help="expectSignal")
+  parser.add_option('--nToys', dest='nToys', default='400', help="Create a number of Toys")
+  parser.add_option('--ext', dest='ext', default='0PH', help="Estensione che vuoi per i jobs")
+  parser.add_option('--poi', dest='poi', default='muV', help="parameter of interest")
+  parser.add_option('--expectSignal', dest='expectSignal', default='1', help="expectSignal")
   parser.add_option('--printOnly', dest='printOnly', default=False, action="store_true", help="Dry run: print submission files only")
   return parser.parse_args() 
 (opt,args) = get_options()
@@ -64,7 +64,7 @@ if opt.step == "Toy":
 
   _f = open("%s/Toys.txt"%(toy_jobDir),"w")
   for n in range(eval(opt.nToys)):
-      _cmd = "combine -m 125.3800 -d ../../Datacard_ALT_0M.root -M GenerateOnly  -s -1 --saveToys   -t 1 -n split%s --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1.,fa3_ggH=0. ;mv higgsCombine*split%s* %s_%s/biasStudy_split%s_toys.root"%(n,n,_outputDir,opt.ext,n)
+      _cmd = "combine -m 125.3800 -d ../../Datacard_ALT_0PH.root -M GenerateOnly  -s -1 --saveToys   -t 1 -n split%s --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1.;mv higgsCombine*split%s* %s/biasStudy_split%s_toys.root"%(n,n,toy_outputDir,n)
       _f.write("%s\n"%_cmd)
   _f.close()
 
@@ -88,7 +88,7 @@ elif opt.step == "Fit":
 
   for i,f in enumerate(FToy):
      # if not (i > 100 and i < 300)  : continue
-      _cmd = "combine -m 125.3800 -d ../../Datacard_ALT_0M.root -M MultiDimFit -P %s --algo singles  --floatOtherPOIs 1  --redefineSignalPOIs muV,muf,fa3_ggH,fa3_ggH,CMS_zz4l_fai1  --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1.,fa3_ggH=0. --robustFit=1 --setRobustFitAlgo=Minuit2,Migrad  --X-rtd FITTER_NEW_CROSSING_ALGO  --setRobustFitTolerance=0.5 --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND --cminFallbackAlgo Minuit2,0:1.  --saveInactivePOI 1  --saveWorkspace --cminDefaultMinimizerStrategy 0  --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants  --X-rtd MINIMIZER_multiMin_maskConstraints  --X-rtd MINIMIZER_multiMin_maskChannels=2  --setParameterRanges muV=0.0,4.0:muf=0.0,10.0:fa3_ggH=-0.5.,0.5.:CMS_zz4l_fai1=-0.001.,0.001  -t 1 -n _%ssplit%s_  --toysFile=%s/%s; mv higgsCombine*_%ssplit%s_* %s/biasStudy_split%s_fits.root"%(opt.poi,opt.poi,i,toy_outputDir,f,opt.poi,i,fit_outputDir,i)
+      _cmd = "combine -m 125.3800 -d %s -M MultiDimFit -P %s --algo singles  --floatOtherPOIs 1  --redefineSignalPOIs muV,muf,CMS_zz4l_fai1  --setParameters muV=1.,CMS_zz4l_fai1=0.,muf=1. --robustFit=1 --setRobustFitAlgo=Minuit2,Migrad  --X-rtd FITTER_NEW_CROSSING_ALGO  --setRobustFitTolerance=0.5 --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND --cminFallbackAlgo Minuit2,0:1.  --saveInactivePOI 1  --saveWorkspace --cminDefaultMinimizerStrategy 0  --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants  --X-rtd MINIMIZER_multiMin_maskConstraints  --X-rtd MINIMIZER_multiMin_maskChannels=2  --setParameterRanges muV=0.0,4.0:muf=0.0,10.0:CMS_zz4l_fai1=-0.005.,0.005  -t 1 -n _%ssplit%s_  --toysFile=%s/%s; mv higgsCombine*_%ssplit%s_* %s/biasStudy_split%s_fits.root"%(Datacard,opt.poi,opt.poi,i,toy_outputDir,f,opt.poi,i,fit_outputDir,i)
       _f.write("%s\n"%_cmd)
 
      
@@ -105,13 +105,13 @@ elif opt.step == "Plot":
   
   label_dict = {"muf":r'\frac{2(\mu_{f}-1)}{\sigma^{+} + \sigma^{-}} ' ,
                 "muV":r'\frac{2(\mu_{V}-1)}{\sigma^{+} + \sigma^{-}} ' ,
-                "CMS_zz4l_fai1":r'\frac{2f_{a3}}{\sigma^{+} + \sigma^{-}} '}
+                "CMS_zz4l_fai1":r'\frac{2f_{a2}}{\sigma^{+} + \sigma^{-}} '}
 
   label_color = {"CMS_zz4l_fai1":ROOT.kMagenta-9,
   "muf":ROOT.kAzure+8,
   "muV":ROOT.kOrange+6}
 
-  pullHist = r.TH1F(' ', ' ', 20, -5., 5.)
+  pullHist = r.TH1F(' ', ' ', 10, -3., 3.)
   pullHist.GetXaxis().SetTitle(label_dict[opt.poi])
   pullHist.GetYaxis().SetTitle('Entries')
   pullHist.GetXaxis().SetTitleOffset(1.)
@@ -169,9 +169,9 @@ elif opt.step == "Plot":
   pullHist.Draw()
   
   r.gStyle.SetOptFit(11111)
-  #pullHist.Fit('gaus')
-  canv.SaveAs('BiasStudy_%s.pdf'%(opt.poi))
-  canv.SaveAs('BiasStudy_%s.png'%(opt.poi))
+  if 'mu' in opt.poi: pullHist.Fit('gaus')
+  canv.SaveAs('plots/BiasStudy_0PH_%s.pdf'%(opt.poi))
+  canv.SaveAs('plots/BiasStudy_0PH_%s.png'%(opt.poi))
 
  
 
