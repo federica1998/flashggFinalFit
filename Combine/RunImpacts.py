@@ -40,6 +40,7 @@ def run(cmd,opt):
 # Options:
 # Expected/Observed
 exp_opts = '' if opt.doObserved else '-t -1'
+ext_dir = 'Unblind' if opt.doObserved else ''
 
 # Common opts for combine jobs
 common_opts = opt.commonOpts
@@ -66,7 +67,7 @@ else:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Make folder for running fits if does not exist
-if not os.path.isdir("runImpacts%s_%s"%(opt.ext,opt.mode)): os.system("mkdir runImpacts%s_%s"%(opt.ext,opt.mode))
+if not os.path.isdir("runImpacts_%s_%s_%s"%(ext_dir,opt.ext,opt.mode)): os.system("mkdir runImpacts_%s_%s_%s"%(ext_dir,opt.ext,opt.mode))
 
 # Read json file
 with open( opt.inputJson ) as jsonfile: inputs = json.load(jsonfile)[opt.mode]
@@ -127,8 +128,8 @@ for fidx in range(len(fits)):
   # For best fit point
   if _fit.split(":")[0] == "bestfit":
     if( "statonly" in _fit.split(":")[1] )&( "freezeParameters" not in _fit_opts ): _fit_opts += " --freezeParameters allConstrainedNuisances"
-    impactcmd1 = "cd runImpacts%s_%s; source /cvmfs/cms.cern.ch/crab3/crab.sh; combineTool.py --task-name %s_initialFit -M Impacts -m 125.38 %s %s --doInitialFit --robustFit 1 -n _%s_initialFit %s %s %s"%(opt.ext,opt.mode,_name,d_opts,exp_opts,_name,_fit_opts,pdf_opts,common_opts)
-    impactcmd2 = "cd runImpacts%s_%s; source /cvmfs/cms.cern.ch/crab3/crab.sh; combineTool.py --task-name %s_doFits -M Impacts -m 125.38 %s %s --doFits -n _%s_initialFit %s %s %s"%(opt.ext,opt.mode,_name,d_opts,exp_opts,_name,_fit_opts,pdf_opts,common_opts)
+    impactcmd1 = "cd runImpacts_%s_%s_%s; source /cvmfs/cms.cern.ch/crab3/crab.sh; combineTool.py --task-name %s_initialFit -M Impacts -m 125.38 %s %s --doInitialFit --robustFit 1 -n _%s_initialFit %s %s %s"%(ext_dir,opt.ext,opt.mode,_name,d_opts,exp_opts,_name,_fit_opts,pdf_opts,common_opts)
+    impactcmd2 = "cd runImpacts_%s_%s_%s; source /cvmfs/cms.cern.ch/crab3/crab.sh; combineTool.py --task-name %s_doFits -M Impacts -m 125.38 %s %s --doFits -n _%s_initialFit %s %s %s"%(ext_dir,opt.ext,opt.mode,_name,d_opts,exp_opts,_name,_fit_opts,pdf_opts,common_opts)
     if opt.batch != 'local':
       impactcmd1 += " %s"%job_opts
       impactcmd2 += " %s"%job_opts

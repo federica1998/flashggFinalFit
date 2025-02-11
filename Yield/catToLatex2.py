@@ -38,3 +38,7 @@ def catToLatex2( _proc ):
   k = _proc
   if k in catToLatex2Map: _proc = re.sub( k, catToLatex2Map[k], _proc )
   return _proc
+
+
+
+

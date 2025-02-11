@@ -28,7 +28,7 @@ shift
 done
 
 bestfit="/eos/cms/store/group/phys_higgs/cmshgg/fderiggi/runFits_JulyProduction/runFitsxsec_xsec/higgsCombine_bestfit_syst_xsec_r_ggH.MultiDimFit.mH125.38.root"
-yields="../Datacard/yields_2024-07-12_xsec"
+yields="../Datacard/yields_JanuaryProduction/yields_2025-01-01_xsec"
 
 if [[ $STEP == "spb" ]]; then
     python makeSplusBModelPlot.py --inputWSFile $bestfit --loadSnapshot MultiDimFit --cats all --doZeroes --pdir . --ext _test --unblind

@@ -65,7 +65,6 @@ for fidx in range(len(fits)):
       if poi in ["r_ggH","r_VBF","r_top","r_VH"]:
         translate_json = "pois_mu.json" 
       elif poi=='CMS_zz4l_fai1':
-
         if 'ALT_0M' in opt.mode: translate_json = "pois_fa3.json"
         if 'ALT_0PH' in opt.mode: translate_json = "pois_fa2.json"
         if 'ALT_L1' in opt.mode: translate_json = "pois_flambda1.json"
@@ -75,10 +74,12 @@ for fidx in range(len(fits)):
         translate_json = "pois_mu.json"
       
       haddcmd = "cd runFits%s_%s; hadd -f %s_%s.root higgsCombine_%s_%s.POINTS.*.*.root; cd .."%(opt.ext,opt.mode,_name,poi,_name,poi)
-      print(haddcmd )
-      plotcmd = "cd runFits%s_%s; plot1DScan.py %s_%s.root --y-cut 30 --y-max 30 -o ../plots/%s_%s%s --POI %s --main-label %s --translate %s/src/flashggFinalFit/Plots/%s; cd .."%(opt.ext,opt.mode,_name,poi,_name,poi,opt.ext,poi,mainlabel,os.environ['CMSSW_BASE'],translate_json)
-      print "plotcmd = ",plotcmd
+      print(haddcmd)
       run(haddcmd)
+      if 'ALT_0M' in opt.mode: plotcmd = "cd runFits%s_%s; python ../plot1DScanBug.py  %s_%s.root --y-cut 20 --y-max 20 -o ../plots/%s_%s%s --POI %s --main-label %s --translate %s/src/flashggFinalFit/Plots/%s; cd .."%(opt.ext,opt.mode,_name,poi,_name,poi,opt.ext,poi,mainlabel,os.environ['CMSSW_BASE'],translate_json)
+      else: plotcmd = "cd runFits%s_%s; python ../plot1DScanBug.py  %s_%s.root --y-cut 30 --y-max 30 -o ../plots/%s_%s%s --POI %s --main-label %s --translate %s/src/flashggFinalFit/Plots/%s; cd .."%(opt.ext,opt.mode,_name,poi,_name,poi,opt.ext,poi,mainlabel,os.environ['CMSSW_BASE'],translate_json)
+      print(plotcmd)
+      
       run(plotcmd)
 
   elif( _fit.split(":")[0] == "scan2D")|( _fit.split(":")[0] == "profile2D" ):

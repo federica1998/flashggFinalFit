@@ -46,10 +46,11 @@ QUEUE=""
 if [[ $I ]]; then
     QUEUE=" --batch local "
 else
-    QUEUE=" --batch condor --queue longlunch "
+    QUEUE=" --batch condor --queue testmatch"
 fi
 
 years=("2016preVFP" "2016postVFP" "2017" "2018")
+
 
 for year in ${years[*]}
 do
@@ -58,6 +59,8 @@ do
 	    python RunWSScripts.py --inputConfig config.py --inputDir  Merged/${year}  --mode trees2ws --modeOpts " --doSystematics" --year ${year} --ext ${year} ${QUEUE} ${DROPT}
     elif [[ $STEP == "t2ws-mc-ggh" ]]; then
 	    python RunWSScripts.py --inputConfig config.py --inputDir  MergeGGH  --mode trees2ws  --modeOpts " --doSystematics"   --year ${year} --ext ggh_${year} ${QUEUE} ${DROPT}
+    elif [[ $STEP == "t2ws-mc-ggh-minlo" ]]; then
+	    python RunWSScripts.py --inputConfig config.py --inputDir MergeMINLO/${year}  --mode trees2ws  --modeOpts " --doSystematics"  --year ${year} --ext ggh_minlo_${year} ${QUEUE} ${DROPT}
     elif [[ $STEP == "t2ws-mc-vbf" ]]; then
 	    python RunWSScripts.py --inputConfig config.py --inputDir MergeVBF  --mode trees2ws  --modeOpts " --doSystematics"  --year ${year} --ext vbf_${year} ${QUEUE} ${DROPT}
 
