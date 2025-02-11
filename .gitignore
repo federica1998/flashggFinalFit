@@ -70,9 +70,8 @@ Combine/Checks/GOF/*.root
 Combine/Checks/GOF/*.txt
 Combine/Checks/GOF/Nominal*
 Combine/Checks/GOF/*output*
-
+Combine/Checks/GOF/*outdir*
 Combine/Checks/Wilk
-Combine/*/
 Datacard/yields*
 Datacard/cards*
 Datacard/Models*
